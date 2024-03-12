@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fazalulabid.samespacemusic.R
-import com.fazalulabid.samespacemusic.presentation.screens.home.TabItem
+import com.fazalulabid.samespacemusic.presentation.util.TabItem
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraSmall
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceLarge
 import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme

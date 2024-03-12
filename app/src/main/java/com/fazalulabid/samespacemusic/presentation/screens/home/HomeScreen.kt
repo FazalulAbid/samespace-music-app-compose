@@ -13,14 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import com.fazalulabid.samespacemusic.domain.model.Song
+import com.fazalulabid.samespacemusic.presentation.util.TabItem
+import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceMedium
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -55,6 +63,7 @@ fun HomeScreen(
     val pagerState = rememberPagerState {
         tabItems.size
     }
+    var bottomTabRowHeightInDp by remember { mutableStateOf(0.dp) }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(
             page = selectedTabIndex,
@@ -64,8 +73,9 @@ fun HomeScreen(
     LaunchedEffect(pagerState.currentPage) {
         selectedTabIndex = pagerState.currentPage
     }
+    val currentLocalDensity = LocalDensity.current
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(contentPadding)
     ) {
@@ -73,9 +83,12 @@ fun HomeScreen(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-        ) { index ->
+        ) {
             LazyColumn(
-                contentPadding = PaddingValues(vertical = PrimaryButtonHeight)
+                contentPadding = PaddingValues(
+                    top = PrimaryButtonHeight,
+                    bottom = bottomTabRowHeightInDp + SpaceMedium
+                )
             ) {
                 items(20) {
                     SongItem(
@@ -85,8 +98,18 @@ fun HomeScreen(
                 }
             }
         }
+        GradientBox(
+            modifier = Modifier.fillMaxSize(),
+            bottomGradientHeight = 2 * bottomTabRowHeightInDp
+        )
         HomeTabRow(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .onGloballyPositioned { coordinates ->
+                    bottomTabRowHeightInDp = with(currentLocalDensity) {
+                        coordinates.size.height.toDp()
+                    }
+                },
             selectedTabIndex = selectedTabIndex,
             tabItems = tabItems,
             onTabClick = { index ->
@@ -95,7 +118,3 @@ fun HomeScreen(
         )
     }
 }
-
-data class TabItem(
-    val title: String
-)
