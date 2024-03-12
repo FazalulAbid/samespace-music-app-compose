@@ -1,28 +1,15 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,19 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.domain.model.Song
+import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraSmall
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceLarge
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceMedium
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceSmall
-import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -107,56 +85,14 @@ fun HomeScreen(
                 }
             }
         }
-        CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
-            TabRow(
-                selectedTabIndex = selectedTabIndex,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = SpaceLarge),
-                indicator = {},
-                divider = {},
-                containerColor = Color.Transparent
-            ) {
-                tabItems.forEachIndexed { index, tabItem ->
-                    val dothAlpha by animateFloatAsState(
-                        targetValue = if (index == selectedTabIndex) 1f else 0f, label = "",
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioHighBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    )
-                    Tab(
-                        selected = index == selectedTabIndex,
-                        onClick = {
-                            selectedTabIndex = index
-                        },
-                    ) {
-                        Text(
-                            text = tabItem.title,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = if (index == selectedTabIndex) {
-                                    MaterialTheme.colorScheme.onBackground
-                                } else MaterialTheme.colorScheme.onSurface
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(SpaceExtraSmall))
-                        Icon(
-                            modifier = Modifier
-                                .size(SpaceExtraSmall)
-                                .graphicsLayer {
-                                    alpha = dothAlpha
-                                    translationY = (1f - dothAlpha) * 48.dp.toPx()
-                                    rotationZ = 0f
-                                },
-                            painter = painterResource(id = R.drawable.ic_circle),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = null,
-                        )
-                        Spacer(modifier = Modifier.height(SpaceLarge))
-                    }
-                }
+        HomeTabRow(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            selectedTabIndex = selectedTabIndex,
+            tabItems = tabItems,
+            onTabClick = { index ->
+                selectedTabIndex = index
             }
-        }
+        )
     }
 }
 
