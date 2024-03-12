@@ -1,4 +1,4 @@
-package com.fazalulabid.samespacemusic.presentation.ui.components
+package com.fazalulabid.samespacemusic.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.domain.model.Song
 import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraExtraSmall
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraExtraExtraSmall
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceMedium
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceSmall
 
@@ -65,7 +65,7 @@ fun SongItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(SpaceExtraExtraSmall))
+            Spacer(modifier = Modifier.height(SpaceExtraExtraExtraSmall))
             Text(
                 text = song.artist,
                 style = MaterialTheme.typography.bodyMedium.copy(

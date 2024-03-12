@@ -1,4 +1,4 @@
-package com.fazalulabid.samespacemusic.presentation.ui.screens.home
+package com.fazalulabid.samespacemusic.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 

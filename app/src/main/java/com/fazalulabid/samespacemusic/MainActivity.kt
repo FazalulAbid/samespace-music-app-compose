@@ -10,8 +10,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.fazalulabid.samespacemusic.domain.model.Song
-import com.fazalulabid.samespacemusic.presentation.ui.components.SongItem
-import com.fazalulabid.samespacemusic.presentation.ui.screens.home.HomeScreen
+import com.fazalulabid.samespacemusic.presentation.components.SongItem
+import com.fazalulabid.samespacemusic.presentation.screens.home.HomeScreen
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SamespaceMusicTheme
 
 class MainActivity : ComponentActivity() {
