@@ -1,8 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,7 +30,9 @@ import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.presentation.components.SeekBar
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PlayPauseButtonSize
-import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeHuge48
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeLarge24
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeMini4
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 
@@ -53,10 +51,10 @@ fun PlayerExpandedContent(modifier: Modifier = Modifier) {
 
         Box(
             modifier = Modifier
-                .height(4.dp)
-                .width(32.dp)
+                .height(SizeMini4)
+                .width(SizeHuge48)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
         )
 
         PlayerThumbnailPager(
@@ -87,12 +85,14 @@ fun PlayerExpandedContent(modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.Normal
                 )
             )
-        }
 
-        SeekBar(
-            modifier = Modifier.padding(horizontal = StandardScreenPadding),
-            onValueChange = {}
-        )
+            Spacer(modifier = Modifier.height(SizeLarge24))
+
+            SeekBar(
+                modifier = Modifier.padding(horizontal = StandardScreenPadding),
+                onValueChange = {}
+            )
+        }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
