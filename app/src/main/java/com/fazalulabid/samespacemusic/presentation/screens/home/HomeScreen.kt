@@ -2,13 +2,17 @@ package com.fazalulabid.samespacemusic.presentation.screens.home
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,18 +27,19 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.fazalulabid.samespacemusic.domain.model.Song
-import com.fazalulabid.samespacemusic.presentation.util.TabItem
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
+import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpandedContent
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceMedium
+import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
+import com.fazalulabid.samespacemusic.presentation.util.TabItem
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
+    paddingValues: PaddingValues
 ) {
 
     val dummySong = Song(
@@ -64,6 +69,13 @@ fun HomeScreen(
         tabItems.size
     }
     var bottomTabRowHeightInDp by remember { mutableStateOf(0.dp) }
+
+    val density = LocalDensity.current
+
+    val songPlayerVisibility = remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(
             page = selectedTabIndex,
@@ -73,11 +85,11 @@ fun HomeScreen(
     LaunchedEffect(pagerState.currentPage) {
         selectedTabIndex = pagerState.currentPage
     }
-    val currentLocalDensity = LocalDensity.current
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(contentPadding)
+            .padding(paddingValues)
     ) {
         HorizontalPager(
             state = pagerState,
@@ -87,13 +99,15 @@ fun HomeScreen(
             LazyColumn(
                 contentPadding = PaddingValues(
                     top = PrimaryButtonHeight,
-                    bottom = bottomTabRowHeightInDp + SpaceMedium
+                    bottom = bottomTabRowHeightInDp + StandardScreenPadding
                 )
             ) {
                 items(20) {
                     SongItem(
                         song = dummySong,
-                        onClick = {}
+                        onClick = {
+                            songPlayerVisibility.value = true
+                        }
                     )
                 }
             }
@@ -106,7 +120,7 @@ fun HomeScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .onGloballyPositioned { coordinates ->
-                    bottomTabRowHeightInDp = with(currentLocalDensity) {
+                    bottomTabRowHeightInDp = with(density) {
                         coordinates.size.height.toDp()
                     }
                 },
@@ -116,5 +130,17 @@ fun HomeScreen(
                 selectedTabIndex = index
             }
         )
+    }
+
+    if (songPlayerVisibility.value) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            PlayerExpandedContent()
+        }
     }
 }

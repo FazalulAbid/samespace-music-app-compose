@@ -25,9 +25,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.domain.model.Song
 import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraExtraExtraSmall
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceMedium
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceSmall
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeTiny2
+import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
 
 @Composable
 fun SongItem(
@@ -40,7 +40,7 @@ fun SongItem(
         modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = SpaceMedium, vertical = SpaceSmall),
+            .padding(horizontal = StandardScreenPadding, vertical = SizeStandard16),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -52,7 +52,7 @@ fun SongItem(
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.width(SpaceMedium))
+        Spacer(modifier = Modifier.width(StandardScreenPadding))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,7 +65,7 @@ fun SongItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(SpaceExtraExtraExtraSmall))
+            Spacer(modifier = Modifier.height(SizeTiny2))
             Text(
                 text = song.artist,
                 style = MaterialTheme.typography.bodyMedium.copy(

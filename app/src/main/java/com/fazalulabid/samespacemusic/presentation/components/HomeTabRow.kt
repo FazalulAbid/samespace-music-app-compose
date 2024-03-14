@@ -23,8 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.presentation.util.TabItem
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceExtraSmall
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SpaceLarge
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
+import com.fazalulabid.samespacemusic.presentation.ui.theme.HomeTabRowPadding
 import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme
 
 @Composable
@@ -38,7 +38,7 @@ fun HomeTabRow(
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = modifier
-                .padding(horizontal = SpaceLarge),
+                .padding(horizontal = HomeTabRowPadding),
             indicator = {},
             divider = {},
             containerColor = Color.Transparent
@@ -63,10 +63,10 @@ fun HomeTabRow(
                             } else MaterialTheme.colorScheme.onSurface
                         )
                     )
-                    Spacer(modifier = Modifier.height(SpaceExtraSmall))
+                    Spacer(modifier = Modifier.height(SizeSmall8))
                     Icon(
                         modifier = Modifier
-                            .size(SpaceExtraSmall)
+                            .size(SizeSmall8)
                             .graphicsLayer {
                                 alpha = dothAlpha
                                 translationY = (1f - dothAlpha) * 48.dp.toPx()
@@ -76,7 +76,7 @@ fun HomeTabRow(
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = null,
                     )
-                    Spacer(modifier = Modifier.height(SpaceLarge))
+                    Spacer(modifier = Modifier.height(HomeTabRowPadding))
                 }
             }
         }
