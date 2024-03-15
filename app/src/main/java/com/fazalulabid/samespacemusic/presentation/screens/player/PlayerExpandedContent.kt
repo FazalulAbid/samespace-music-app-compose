@@ -52,10 +52,14 @@ fun PlayerExpandedContent(
         modifier = modifier
             .fillMaxSize()
             .background(
-                brush = Brush.linearGradient(
+                brush = Brush.verticalGradient(
                     listOf(
-                        Color.fromHex(currentlyPlayingMusicTrack.accent).copy(alpha = 0.5f),
-                        MaterialTheme.colorScheme.background
+                        Color
+                            .fromHex(currentlyPlayingMusicTrack.accent)
+                            .copy(alpha = 0.6f),
+                        Color
+                            .fromHex(currentlyPlayingMusicTrack.accent)
+                            .copy(alpha = 0.2f)
                     )
                 )
             )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import coil.ImageLoader
@@ -30,11 +31,13 @@ class MainActivity : ComponentActivity() {
                 val density = LocalDensity.current
                 val windowsInsets = WindowInsets.systemBars
                 val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
+                val coroutineScope = rememberCoroutineScope()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HomeScreen(
                         paddingValues = innerPadding,
-                        imageLoader = imageLoader
+                        imageLoader = imageLoader,
+                        coroutineScope = coroutineScope
                     )
                 }
             }

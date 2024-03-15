@@ -16,7 +16,7 @@ fun MusicTrackList(
     imageLoader: ImageLoader,
     items: List<MusicTrack>,
     isTopTrackList: Boolean = false,
-    onItemClick: () -> Unit
+    onItemClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -30,7 +30,7 @@ fun MusicTrackList(
             SongItem(
                 musicTrack = it,
                 imageLoader = imageLoader,
-                onClick = { onItemClick() }
+                onClick = { onItemClick(it.id) }
             )
         }
     }

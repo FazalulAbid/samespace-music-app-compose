@@ -1,5 +1,7 @@
 package com.fazalulabid.samespacemusic.domain.model
 
+import com.fazalulabid.samespacemusic.core.util.Constants
+
 data class MusicTrack(
     val id: Int,
     val status: String,
@@ -14,5 +16,5 @@ data class MusicTrack(
     val topTrack: Boolean,
     val url: String
 ) {
-    fun getCoverImageUrl() = "https://cms.samespace.com/assets/$cover"
+    fun getCoverImageUrl() = Constants.BASE_IMAGE_URL + cover
 }

@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.fazalulabid.samespacemusic.core.util.Resource
 import com.fazalulabid.samespacemusic.domain.usecase.GetAllMusicTracksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +20,31 @@ class HomeViewModel @Inject constructor(
     private val _musicTrackState = mutableStateOf(MusicTracksState())
     val musicTrackState: State<MusicTracksState> = _musicTrackState
 
+    private val _eventFlow = MutableSharedFlow<HomeScreenUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     init {
         viewModelScope.launch {
             getAllMusicTracks()
+        }
+    }
+
+    fun onEvent(event: MusicTrackEvent) = when (event) {
+        is MusicTrackEvent.SelectMusicTrack -> {
+            selectMusicTrack(event.id)
+        }
+    }
+
+    private fun selectMusicTrack(musicTrackId: Int) {
+        val selectedMusicTrack =
+            _musicTrackState.value.musicTracks.firstOrNull { it.id == musicTrackId }
+        selectedMusicTrack?.let { selectedTrack ->
+            _musicTrackState.value = musicTrackState.value.copy(
+                currentlyPlaying = selectedTrack
+            )
+            viewModelScope.launch {
+                _eventFlow.emit(HomeScreenUiEvent.OpenPlayerBottomSheet(selectedTrack))
+            }
         }
     }
 
@@ -40,8 +64,7 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _musicTrackState.value = MusicTracksState(
-                        musicTracks = result.data ?: emptyList(),
-                        currentlyPlaying = result.data?.last()
+                        musicTracks = result.data ?: emptyList()
                     )
                 }
             }

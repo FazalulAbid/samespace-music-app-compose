@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
+import com.fazalulabid.samespacemusic.core.util.Constants.homeScreenTabs
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
@@ -51,6 +52,8 @@ import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.TabItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -59,22 +62,21 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     imageLoader: ImageLoader,
+    coroutineScope: CoroutineScope,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val musicTrackState = viewModel.musicTrackState.value
-    val tabItems = listOf(
-        TabItem("For You"),
-        TabItem("Top Tracks")
-    )
+
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
-    val pagerState = rememberPagerState {
-        tabItems.size
-    }
-    var bottomTabRowHeightInDp by remember { mutableStateOf(0.dp) }
 
+    val pagerState = rememberPagerState {
+        homeScreenTabs.size
+    }
+
+    var bottomTabRowHeightInDp by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
     val playerSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -82,7 +84,16 @@ fun HomeScreen(
     var isPlayerSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
-    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is HomeScreenUiEvent.OpenPlayerBottomSheet -> {
+                    isPlayerSheetOpen = true
+                }
+            }
+        }
+    }
 
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(
@@ -114,10 +125,8 @@ fun HomeScreen(
                         contentPadding = PaddingValues(
                             bottom = bottomTabRowHeightInDp + StandardScreenPadding
                         ),
-                        onItemClick = {
-                            coroutineScope.launch {
-                                isPlayerSheetOpen = true
-                            }
+                        onItemClick = { musicTrackId ->
+                            viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
                         }
                     )
                 }
@@ -130,10 +139,8 @@ fun HomeScreen(
                             bottom = bottomTabRowHeightInDp + StandardScreenPadding
                         ),
                         isTopTrackList = true,
-                        onItemClick = {
-                            coroutineScope.launch {
-                                isPlayerSheetOpen = true
-                            }
+                        onItemClick = { musicTrackId ->
+                            viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
                         }
                     )
                 }
@@ -172,7 +179,7 @@ fun HomeScreen(
                         } else Color.Transparent
                     ),
                     selectedTabIndex = selectedTabIndex,
-                    tabItems = tabItems,
+                    tabItems = homeScreenTabs,
                     onTabClick = { index ->
                         selectedTabIndex = index
                     }
