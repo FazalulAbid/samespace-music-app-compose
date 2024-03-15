@@ -93,7 +93,7 @@ fun HomeScreen(
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(
             page = selectedTabIndex,
-            animationSpec = tween(600)
+            animationSpec = tween(400)
         )
     }
     LaunchedEffect(pagerState.currentPage) {
@@ -155,9 +155,8 @@ fun HomeScreen(
                 sheetState = playerSheetState,
                 shape = RectangleShape,
                 dragHandle = {},
-                windowInsets = WindowInsets(0.dp),
-
-                ) {
+                windowInsets = WindowInsets(0.dp)
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly,
