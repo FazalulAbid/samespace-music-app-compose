@@ -26,9 +26,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
+import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
 import com.fazalulabid.samespacemusic.presentation.components.SeekBar
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PlayPauseButtonSize
@@ -42,7 +43,10 @@ import com.fazalulabid.samespacemusic.presentation.util.fromHex
 @Composable
 fun PlayerExpandedContent(
     modifier: Modifier = Modifier,
-    currentlyPlayingMusicTrack: MusicTrack
+    currentlyPlayingMusicTrack: MusicTrack,
+    musicTrackThumbnailList: List<MusicTrackThumbnail>,
+    imageLoader: ImageLoader,
+    onThumbnailPagerChanged: (Int) -> Unit
 ) {
     val windowInsets = WindowInsets.systemBars
 
@@ -76,7 +80,10 @@ fun PlayerExpandedContent(
 
         PlayerThumbnailPager(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            items = musicTrackThumbnailList,
+            imageLoader = imageLoader,
+            onThumbnailPagerChanged = onThumbnailPagerChanged
         )
 
         Column(

@@ -207,7 +207,12 @@ fun HomeScreen(
                 ) {
                     musicTrackState.currentlyPlaying?.let { currentlyPlayingMusicTrack ->
                         PlayerExpandedContent(
-                            currentlyPlayingMusicTrack = currentlyPlayingMusicTrack
+                            currentlyPlayingMusicTrack = currentlyPlayingMusicTrack,
+                            musicTrackThumbnailList = musicTrackState.musicTrackThumbnails,
+                            imageLoader = imageLoader,
+                            onThumbnailPagerChanged = { musicTrackId ->
+                                viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
+                            }
                         )
                     }
                 }

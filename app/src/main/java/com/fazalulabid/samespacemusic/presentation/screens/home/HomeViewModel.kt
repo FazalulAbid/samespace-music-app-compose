@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazalulabid.samespacemusic.core.util.Resource
+import com.fazalulabid.samespacemusic.domain.model.MusicTrack
+import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
+import com.fazalulabid.samespacemusic.domain.model.toMusicTrackThumbnails
 import com.fazalulabid.samespacemusic.domain.usecase.GetAllMusicTracksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -64,7 +67,8 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _musicTrackState.value = MusicTracksState(
-                        musicTracks = result.data ?: emptyList()
+                        musicTracks = result.data ?: emptyList(),
+                        musicTrackThumbnails = result.data.toMusicTrackThumbnails() ?: emptyList()
                     )
                 }
             }
