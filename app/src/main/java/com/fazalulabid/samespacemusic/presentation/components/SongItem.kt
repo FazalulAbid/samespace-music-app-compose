@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
-import com.fazalulabid.samespacemusic.domain.model.Song
+import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeTiny2
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
@@ -31,7 +31,7 @@ import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
 
 @Composable
 fun SongItem(
-    song: Song,
+    musicTrack: MusicTrack,
     thumbnailSize: Dp = AvatarSize,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -45,8 +45,8 @@ fun SongItem(
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                song.getCoverImageUrl()
-            ), contentDescription = stringResource(R.string.cover_image, song.name),
+                musicTrack.getCoverImageUrl()
+            ), contentDescription = stringResource(R.string.cover_image, musicTrack.name),
             modifier = Modifier
                 .size(thumbnailSize)
                 .clip(CircleShape),
@@ -58,7 +58,7 @@ fun SongItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = song.name,
+                text = musicTrack.name,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 ),
@@ -67,7 +67,7 @@ fun SongItem(
             )
             Spacer(modifier = Modifier.height(SizeTiny2))
             Text(
-                text = song.artist,
+                text = musicTrack.artist,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 )

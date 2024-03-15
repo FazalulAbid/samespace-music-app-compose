@@ -1,9 +1,8 @@
 package com.fazalulabid.samespacemusic.domain.model
 
-data class Song(
+data class MusicTrack(
     val id: Int,
     val status: String,
-    val sort: Int?,
     val userCreated: String,
     val dateCreated: String,
     val userUpdated: String,

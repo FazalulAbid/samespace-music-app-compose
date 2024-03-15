@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.fazalulabid.samespacemusic.domain.model.Song
+import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
@@ -42,7 +42,6 @@ import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpanded
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.TabItem
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -53,10 +52,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val dummySong = Song(
+    val dummyMusicTrack = MusicTrack(
         id = 1,
         status = "published",
-        sort = null,
         userCreated = "2085be13-8079-40a6-8a39-c3b9180f9a0a",
         dateCreated = "2023-08-10T06:10:57.746Z",
         userUpdated = "2085be13-8079-40a6-8a39-c3b9180f9a0a",
@@ -118,7 +116,7 @@ fun HomeScreen(
             ) {
                 items(20) {
                     SongItem(
-                        song = dummySong,
+                        musicTrack = dummyMusicTrack,
                         onClick = {
                             coroutineScope.launch {
                                 isPlayerSheetOpen = true

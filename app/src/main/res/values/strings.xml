@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Samespace Music</string>
     <string name="cover_image">%1$s cover image</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="an_unexpected_error_occurred">An unexpected error occurred.</string>
+    <string name="couldn_t_reach_server">Couldn\'t reach server.</string>
 </resources>
