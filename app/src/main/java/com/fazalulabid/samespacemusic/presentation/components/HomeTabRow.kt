@@ -27,6 +27,7 @@ import com.fazalulabid.samespacemusic.presentation.util.TabItem
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.HomeTabRowPadding
 import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 

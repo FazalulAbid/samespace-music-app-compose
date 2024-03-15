@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,9 +35,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.ImageLoader
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
+import com.fazalulabid.samespacemusic.presentation.components.MusicTrackList
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
 import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpandedContent
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
@@ -49,24 +52,11 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
+    imageLoader: ImageLoader,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val dummyMusicTrack = MusicTrack(
-        id = 1,
-        status = "published",
-        userCreated = "2085be13-8079-40a6-8a39-c3b9180f9a0a",
-        dateCreated = "2023-08-10T06:10:57.746Z",
-        userUpdated = "2085be13-8079-40a6-8a39-c3b9180f9a0a",
-        dateUpdated = "2023-08-10T07:19:48.547Z",
-        name = "Colors",
-        artist = "William King",
-        accent = "#331E00",
-        cover = "4f718272-6b0e-42ee-92d0-805b783cb471",
-        topTrack = true,
-        url = "https://pub-172b4845a7e24a16956308706aaf24c2.r2.dev/august-145937.mp3"
-    )
-
+    val musicTrackState = viewModel.musicTrackState.value
     val tabItems = listOf(
         TabItem("For You"),
         TabItem("Top Tracks")
@@ -91,7 +81,7 @@ fun HomeScreen(
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(
             page = selectedTabIndex,
-            animationSpec = tween(400)
+            animationSpec = tween(300)
         )
     }
     LaunchedEffect(pagerState.currentPage) {
@@ -107,17 +97,33 @@ fun HomeScreen(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    top = PrimaryButtonHeight,
-                    bottom = bottomTabRowHeightInDp + StandardScreenPadding
-                )
-            ) {
-                items(20) {
-                    SongItem(
-                        musicTrack = dummyMusicTrack,
-                        onClick = {
+        ) { page ->
+            when (page) {
+                FOR_YOU_PAGE -> {
+                    MusicTrackList(
+                        imageLoader = imageLoader,
+                        items = musicTrackState.musicTracks,
+                        contentPadding = PaddingValues(
+                            top = PrimaryButtonHeight,
+                            bottom = bottomTabRowHeightInDp + StandardScreenPadding
+                        ),
+                        onItemClick = {
+                            coroutineScope.launch {
+                                isPlayerSheetOpen = true
+                            }
+                        }
+                    )
+                }
+
+                TOP_TRACKS_PAGE -> {
+                    MusicTrackList(
+                        imageLoader = imageLoader,
+                        items = musicTrackState.musicTracks,
+                        contentPadding = PaddingValues(
+                            top = PrimaryButtonHeight,
+                            bottom = bottomTabRowHeightInDp + StandardScreenPadding
+                        ),
+                        onItemClick = {
                             coroutineScope.launch {
                                 isPlayerSheetOpen = true
                             }
@@ -168,3 +174,6 @@ fun HomeScreen(
         }
     }
 }
+
+const val FOR_YOU_PAGE = 0
+const val TOP_TRACKS_PAGE = 1

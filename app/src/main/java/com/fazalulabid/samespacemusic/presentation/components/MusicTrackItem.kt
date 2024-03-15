@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
@@ -32,8 +33,9 @@ import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
 @Composable
 fun SongItem(
     musicTrack: MusicTrack,
-    thumbnailSize: Dp = AvatarSize,
     modifier: Modifier = Modifier,
+    thumbnailSize: Dp = AvatarSize,
+    imageLoader: ImageLoader,
     onClick: () -> Unit
 ) {
     Row(
@@ -43,9 +45,11 @@ fun SongItem(
             .padding(horizontal = StandardScreenPadding, vertical = SizeStandard16),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         Image(
             painter = rememberAsyncImagePainter(
-                musicTrack.getCoverImageUrl()
+                model = musicTrack.getCoverImageUrl(),
+                imageLoader = imageLoader
             ), contentDescription = stringResource(R.string.cover_image, musicTrack.name),
             modifier = Modifier
                 .size(thumbnailSize)

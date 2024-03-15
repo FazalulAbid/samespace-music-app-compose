@@ -1,6 +1,7 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
-import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazalulabid.samespacemusic.core.util.Resource
@@ -14,27 +15,33 @@ class HomeViewModel @Inject constructor(
     private val getAllMusicTracksUseCase: GetAllMusicTracksUseCase
 ) : ViewModel() {
 
-    val TAG = "Hello : HomeViewModel"
+    private val _musicTrackState = mutableStateOf(MusicTracksState())
+    val musicTrackState: State<MusicTracksState> = _musicTrackState
 
     init {
-        getAllMusicTracks()
+        viewModelScope.launch {
+            getAllMusicTracks()
+        }
     }
 
-    private fun getAllMusicTracks() {
-        viewModelScope.launch {
-            getAllMusicTracksUseCase(Unit).collect { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        Log.d(TAG, "getAllMusicTracks: ${result.error}")
-                    }
+    private suspend fun getAllMusicTracks() {
+        _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
+        getAllMusicTracksUseCase(Unit).collect { result ->
+            when (result) {
+                is Resource.Error -> {
+                    _musicTrackState.value = MusicTracksState(
+                        error = result.uiText
+                    )
+                }
 
-                    is Resource.Loading -> {
-                        Log.d(TAG, "getAllMusicTracks: Loading")
-                    }
+                is Resource.Loading -> {
+                    _musicTrackState.value = MusicTracksState(isLoading = true)
+                }
 
-                    is Resource.Success -> {
-                        Log.d(TAG, "getAllMusicTracks: ${result.data}")
-                    }
+                is Resource.Success -> {
+                    _musicTrackState.value = MusicTracksState(
+                        musicTracks = result.data ?: emptyList()
+                    )
                 }
             }
         }
