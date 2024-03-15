@@ -3,6 +3,7 @@ package com.fazalulabid.samespacemusic.presentation.components
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,21 +17,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fazalulabid.samespacemusic.R
-import com.fazalulabid.samespacemusic.presentation.util.TabItem
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.HomeTabRowPadding
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import com.fazalulabid.samespacemusic.presentation.util.TabItem
 
 @Composable
 fun HomeTabRow(
@@ -42,13 +39,7 @@ fun HomeTabRow(
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            modifier = modifier
-                .padding(
-                    top = StandardScreenPadding,
-                    bottom = HomeTabRowPadding,
-                    start = HomeTabRowPadding,
-                    end = HomeTabRowPadding
-                ),
+            modifier = modifier,
             indicator = {},
             divider = {},
             containerColor = Color.Transparent
@@ -62,6 +53,13 @@ fun HomeTabRow(
                     )
                 )
                 Tab(
+                    modifier = Modifier
+                        .padding(
+                            top = StandardScreenPadding,
+                            bottom = HomeTabRowPadding,
+                            start = HomeTabRowPadding,
+                            end = HomeTabRowPadding
+                        ),
                     selected = index == selectedTabIndex,
                     onClick = { onTabClick(index) },
                 ) {
