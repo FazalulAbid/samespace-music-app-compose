@@ -1,5 +1,8 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
+import com.fazalulabid.samespacemusic.core.util.Constants
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
@@ -48,6 +53,29 @@ fun PlayerCollapsedContent(
     onClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
+    val transition = updateTransition(currentMusicTrack.accent, label = "")
+
+    val firstColor by transition.animateColor(
+        transitionSpec = { tween(durationMillis = Constants.BACKGROUND_ANIMATION_DURATION) },
+        label = ""
+    ) { accentColor ->
+        Color.fromHex(accentColor).copy(alpha = 0.7f)
+    }
+
+    val secondColor by transition.animateColor(
+        transitionSpec = { tween(durationMillis = Constants.BACKGROUND_ANIMATION_DURATION) },
+        label = ""
+    ) { accentColor ->
+        Color.fromHex(accentColor).copy(alpha = 0.8f)
+    }
+
+    val thirdColor by transition.animateColor(
+        transitionSpec = { tween(durationMillis = Constants.BACKGROUND_ANIMATION_DURATION) },
+        label = ""
+    ) { accentColor ->
+        Color.fromHex(accentColor).copy(alpha = 0.9f)
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -58,17 +86,7 @@ fun PlayerCollapsedContent(
                 .clickable { onClick() }
                 .background(
                     brush = Brush.verticalGradient(
-                        listOf(
-                            Color
-                                .fromHex(currentMusicTrack.accent)
-                                .copy(alpha = 0.7f),
-                            Color
-                                .fromHex(currentMusicTrack.accent)
-                                .copy(alpha = 0.8f),
-                            Color
-                                .fromHex(currentMusicTrack.accent)
-                                .copy(alpha = 0.9f)
-                        )
+                        listOf(firstColor, secondColor, thirdColor)
                     )
                 )
                 .padding(horizontal = StandardScreenPadding, vertical = SizeSmall8),

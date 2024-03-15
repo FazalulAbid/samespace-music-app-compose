@@ -1,5 +1,8 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.R
+import com.fazalulabid.samespacemusic.core.util.Constants.BACKGROUND_ANIMATION_DURATION
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
 import com.fazalulabid.samespacemusic.presentation.components.SeekBar
@@ -50,6 +55,22 @@ fun PlayerExpandedContent(
 ) {
     val windowInsets = WindowInsets.systemBars
 
+    val transition = updateTransition(currentlyPlayingMusicTrack.accent, label = "")
+
+    val firstColor by transition.animateColor(
+        transitionSpec = { tween(durationMillis = BACKGROUND_ANIMATION_DURATION) },
+        label = ""
+    ) { accentColor ->
+        Color.fromHex(accentColor).copy(alpha = 0.6f)
+    }
+
+    val secondColor by transition.animateColor(
+        transitionSpec = { tween(durationMillis = BACKGROUND_ANIMATION_DURATION) },
+        label = ""
+    ) { accentColor ->
+        Color.fromHex(accentColor).copy(alpha = 0.2f)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -57,14 +78,7 @@ fun PlayerExpandedContent(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    listOf(
-                        Color
-                            .fromHex(currentlyPlayingMusicTrack.accent)
-                            .copy(alpha = 0.6f),
-                        Color
-                            .fromHex(currentlyPlayingMusicTrack.accent)
-                            .copy(alpha = 0.2f)
-                    )
+                    colors = listOf(firstColor, secondColor)
                 )
             )
             .padding(paddingValues = windowInsets.asPaddingValues())

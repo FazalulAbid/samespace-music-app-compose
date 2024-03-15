@@ -8,4 +8,5 @@ object Constants {
         TabItem("Top Tracks")
     )
     const val BASE_IMAGE_URL = "https://cms.samespace.com/assets/"
+    const val BACKGROUND_ANIMATION_DURATION = 1000
 }
