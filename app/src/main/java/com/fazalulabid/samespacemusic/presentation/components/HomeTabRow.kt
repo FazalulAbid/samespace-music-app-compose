@@ -26,6 +26,7 @@ import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.presentation.util.TabItem
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.HomeTabRowPadding
+import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.NoRippleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -42,7 +43,12 @@ fun HomeTabRow(
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = modifier
-                .padding(horizontal = HomeTabRowPadding),
+                .padding(
+                    top = StandardScreenPadding,
+                    bottom = HomeTabRowPadding,
+                    start = HomeTabRowPadding,
+                    end = HomeTabRowPadding
+                ),
             indicator = {},
             divider = {},
             containerColor = Color.Transparent
@@ -80,7 +86,6 @@ fun HomeTabRow(
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = null,
                     )
-                    Spacer(modifier = Modifier.height(HomeTabRowPadding))
                 }
             }
         }

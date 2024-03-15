@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -41,8 +44,11 @@ import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
 import com.fazalulabid.samespacemusic.presentation.components.MusicTrackList
 import com.fazalulabid.samespacemusic.presentation.components.SongItem
+import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerCollapsedContent
 import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpandedContent
+import com.fazalulabid.samespacemusic.presentation.ui.theme.CollapsedPlayerSize
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.TabItem
 import kotlinx.coroutines.launch
@@ -135,22 +141,45 @@ fun HomeScreen(
         }
         GradientBox(
             modifier = Modifier.fillMaxSize(),
-            bottomGradientHeight = 2 * bottomTabRowHeightInDp
-        )
-        HomeTabRow(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .onGloballyPositioned { coordinates ->
-                    bottomTabRowHeightInDp = with(density) {
-                        coordinates.size.height.toDp()
+            bottomGradientHeight = bottomTabRowHeightInDp,
+            isCurrentlyPlaying = musicTrackState.currentlyPlaying != null
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .onGloballyPositioned { coordinates ->
+                        bottomTabRowHeightInDp = with(density) {
+                            coordinates.size.height.toDp()
+                        }
                     }
-                },
-            selectedTabIndex = selectedTabIndex,
-            tabItems = tabItems,
-            onTabClick = { index ->
-                selectedTabIndex = index
+            ) {
+                musicTrackState.currentlyPlaying?.let { musicTrack ->
+                    PlayerCollapsedContent(
+                        currentMusicTrack = musicTrack,
+                        imageLoader = imageLoader,
+                        onClick = {
+                            isPlayerSheetOpen = true
+                        },
+                        onActionClick = {
+
+                        }
+                    )
+                }
+                HomeTabRow(
+                    modifier = Modifier.background(
+                        if (musicTrackState.currentlyPlaying != null) {
+                            MaterialTheme.colorScheme.background
+                        } else Color.Transparent
+                    ),
+                    selectedTabIndex = selectedTabIndex,
+                    tabItems = tabItems,
+                    onTabClick = { index ->
+                        selectedTabIndex = index
+                    }
+                )
             }
-        )
+        }
+
 
         if (isPlayerSheetOpen) {
             ModalBottomSheet(
@@ -169,7 +198,11 @@ fun HomeScreen(
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                 ) {
-                    PlayerExpandedContent()
+                    musicTrackState.currentlyPlaying?.let { currentlyPlayingMusicTrack ->
+                        PlayerExpandedContent(
+                            currentlyPlayingMusicTrack = currentlyPlayingMusicTrack
+                        )
+                    }
                 }
             }
         }

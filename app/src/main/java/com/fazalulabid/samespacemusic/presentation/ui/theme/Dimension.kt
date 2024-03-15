@@ -12,7 +12,7 @@ val SizeHuge48 = 48.dp
 val SizeGigantic56 = 56.dp
 
 val StandardScreenPadding = 22.dp
-val AvatarSize = 56.dp
+val AvatarSize = 48.dp
 val PrimaryButtonHeight = 56.dp
 val PlayPauseButtonSize = 68.dp
 val HomeTabRowPadding = 36.dp

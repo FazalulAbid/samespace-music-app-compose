@@ -40,7 +40,8 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _musicTrackState.value = MusicTracksState(
-                        musicTracks = result.data ?: emptyList()
+                        musicTracks = result.data ?: emptyList(),
+                        currentlyPlaying = result.data?.last()
                     )
                 }
             }

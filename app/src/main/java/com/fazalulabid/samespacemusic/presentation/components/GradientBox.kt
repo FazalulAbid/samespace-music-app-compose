@@ -18,22 +18,23 @@ import androidx.compose.ui.unit.dp
 fun GradientBox(
     modifier: Modifier = Modifier,
     gradientColor: Color = MaterialTheme.colorScheme.background,
-    topGradientHeight: Dp = 50.dp,
     bottomGradientHeight: Dp = 100.dp,
-    isTopGradientNeeded: Boolean = false
+    isCurrentlyPlaying: Boolean = false,
+    content: @Composable () -> Unit
 ) {
     Box(modifier = modifier) {
-        if (isTopGradientNeeded) {
+        if (!isCurrentlyPlaying) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(topGradientHeight)
+                    .height(bottomGradientHeight)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(
-                                gradientColor,
-                                Color.Transparent,
+                            colorStops = arrayOf(
+                                0F to Color.Transparent,
+                                0.4F to gradientColor.copy(alpha = 0.9F),
+                                0.6F to gradientColor.copy(alpha = 1F),
                             ),
                             startY = 0f,
                             endY = Float.POSITIVE_INFINITY,
@@ -42,23 +43,6 @@ fun GradientBox(
                     )
             )
         }
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(bottomGradientHeight)
-                .background(
-                    Brush.verticalGradient(
-                        colorStops = arrayOf(
-                            0F to Color.Transparent,
-                            0.4F to gradientColor.copy(alpha = 0.9F),
-                            0.6F to gradientColor.copy(alpha = 1F),
-                        ),
-                        startY = 0f,
-                        endY = Float.POSITIVE_INFINITY,
-                        tileMode = TileMode.Clamp
-                    )
-                )
-        )
+        content()
     }
 }

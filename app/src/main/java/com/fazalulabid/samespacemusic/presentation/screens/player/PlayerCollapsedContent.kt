@@ -1,133 +1,94 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.compose.ui.unit.Dp
+import coil.ImageLoader
+import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.R
+import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
-import com.fazalulabid.samespacemusic.presentation.ui.theme.CollapsedPlayerSize
+import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
+import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeTiny2
+import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 
 @Composable
-fun PlayerCollapsedContent(modifier: Modifier = Modifier) {
+fun PlayerCollapsedContent(
+    modifier: Modifier = Modifier,
+    currentMusicTrack: MusicTrack,
+    imageLoader: ImageLoader,
+    thumbnailSize: Dp = AvatarSize,
+    thumbnailShape: Shape = MaterialTheme.shapes.large,
+    onClick: () -> Unit,
+    onActionClick: () -> Unit
+) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
         modifier = Modifier
-            .background(Color.Red)
-            .fillMaxSize()
-            .drawBehind {
-                val progress = 0.9f
-
-                drawLine(
-                    color = Color.White,
-                    start = Offset(x = 0f, y = 1.dp.toPx()),
-                    end = Offset(x = size.width * progress, y = 1.dp.toPx()),
-                    strokeWidth = 2.dp.toPx()
-                )
-            }
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .background(Color.Black)
+            .padding(horizontal = StandardScreenPadding, vertical = SizeSmall8),
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(
-            modifier = Modifier
-                .width(2.dp)
-        )
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .height(CollapsedPlayerSize)
-        ) {
-            AsyncImage(
-                model = "",
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .size(48.dp)
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .height(CollapsedPlayerSize)
-                .weight(1f)
-        ) {
-            BasicText(
-                text = "The First Song",
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            BasicText(
-                text = "Tylor Swift",
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-
-        Spacer(
-            modifier = Modifier
-                .width(2.dp)
-        )
-
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .height(CollapsedPlayerSize)
+            modifier
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            StandardIconButton(
-                icon = if (true) R.drawable.pause else R.drawable.play,
-                color = MaterialTheme.colorScheme.onBackground,
-                onClick = {
-                    if (true) {
-                        // Pause Song
-                    } else {
-                        // Play Song
-                    }
-                },
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = currentMusicTrack.getCoverImageUrl(),
+                    imageLoader = imageLoader
+                ),
+                contentDescription = stringResource(R.string.cover_image, currentMusicTrack.name),
                 modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .size(20.dp)
+                    .size(thumbnailSize)
+                    .clip(thumbnailShape),
+                contentScale = ContentScale.Crop
             )
-
-            StandardIconButton(
-                icon = R.drawable.play_skip_forward,
-                color = MaterialTheme.colorScheme.onBackground,
-                onClick = {
-                    // Force seek to next song
-                },
-                modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .size(20.dp)
+            Spacer(modifier = Modifier.width(StandardScreenPadding))
+            Text(
+                text = currentMusicTrack.name,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onBackground
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
-
-        Spacer(
-            modifier = Modifier
-                .width(2.dp)
+        StandardIconButton(
+            onClick = {
+                onActionClick()
+            },
+            icon = if (true) {
+                R.drawable.pause
+            } else R.drawable.play,
+            color = MaterialTheme.colorScheme.background,
+            backgroundColor = MaterialTheme.colorScheme.onBackground
         )
     }
 }

@@ -22,11 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.fazalulabid.samespacemusic.R
+import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.SeekBar
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PlayPauseButtonSize
@@ -35,17 +37,28 @@ import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeLarge24
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeMini4
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
+import com.fazalulabid.samespacemusic.presentation.util.fromHex
 
 @Composable
-fun PlayerExpandedContent(modifier: Modifier = Modifier) {
+fun PlayerExpandedContent(
+    modifier: Modifier = Modifier,
+    currentlyPlayingMusicTrack: MusicTrack
+) {
     val windowInsets = WindowInsets.systemBars
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                brush = Brush.linearGradient(
+                    listOf(
+                        Color.fromHex(currentlyPlayingMusicTrack.accent).copy(alpha = 0.5f),
+                        MaterialTheme.colorScheme.background
+                    )
+                )
+            )
             .padding(paddingValues = windowInsets.asPaddingValues())
     ) {
 
@@ -67,7 +80,7 @@ fun PlayerExpandedContent(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "The First Song",
+                text = currentlyPlayingMusicTrack.name,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -77,7 +90,7 @@ fun PlayerExpandedContent(modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = "Fazalul Abid",
+                text = currentlyPlayingMusicTrack.artist,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyLarge.copy(
