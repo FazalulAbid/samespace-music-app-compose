@@ -84,8 +84,10 @@ fun HomeScreen(
             animationSpec = tween(300)
         )
     }
-    LaunchedEffect(pagerState.currentPage) {
-        selectedTabIndex = pagerState.currentPage
+    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress) {
+            selectedTabIndex = pagerState.currentPage
+        }
     }
 
     Box(
@@ -104,7 +106,6 @@ fun HomeScreen(
                         imageLoader = imageLoader,
                         items = musicTrackState.musicTracks,
                         contentPadding = PaddingValues(
-                            top = PrimaryButtonHeight,
                             bottom = bottomTabRowHeightInDp + StandardScreenPadding
                         ),
                         onItemClick = {
@@ -120,9 +121,9 @@ fun HomeScreen(
                         imageLoader = imageLoader,
                         items = musicTrackState.musicTracks,
                         contentPadding = PaddingValues(
-                            top = PrimaryButtonHeight,
                             bottom = bottomTabRowHeightInDp + StandardScreenPadding
                         ),
+                        isTopTrackList = true,
                         onItemClick = {
                             coroutineScope.launch {
                                 isPlayerSheetOpen = true
