@@ -1,15 +1,13 @@
 package com.fazalulabid.samespacemusic.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fazalulabid.samespacemusic.core.util.Constants
-import com.fazalulabid.samespacemusic.data.remote.dto.MusicTrackDto
 
+@Entity(tableName = "music_tracks")
 data class MusicTrack(
+    @PrimaryKey
     val id: Int,
-    val status: String,
-    val userCreated: String,
-    val dateCreated: String,
-    val userUpdated: String,
-    val dateUpdated: String,
     val name: String,
     val artist: String,
     val accent: String,

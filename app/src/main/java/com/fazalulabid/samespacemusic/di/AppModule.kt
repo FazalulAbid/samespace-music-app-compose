@@ -2,8 +2,11 @@ package com.fazalulabid.samespacemusic.di
 
 import android.app.Application
 import android.content.Context
+import androidx.core.content.contentValuesOf
+import androidx.room.Room
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.BuildConfig
+import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +37,15 @@ object AppModule {
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideMusicTracksDatabase(app: Application): MusicTracksDatabase =
+        Room.databaseBuilder(
+            app,
+            MusicTracksDatabase::class.java,
+            MusicTracksDatabase.DATABASE_NAME
+        ).build()
 
     @Provides
     @Singleton

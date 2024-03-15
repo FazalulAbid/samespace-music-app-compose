@@ -17,7 +17,7 @@ constraintLayout = "1.0.1"
 okhttpLoggingInterceptorVersion = "4.8.0"
 palette = "1.0.0"
 retrofitVersion = "2.9.0"
-roomKtx = "2.4.2"
+roomKtx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

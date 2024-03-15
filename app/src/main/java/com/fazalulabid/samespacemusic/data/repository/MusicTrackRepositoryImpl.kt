@@ -3,12 +3,14 @@ package com.fazalulabid.samespacemusic.data.repository
 import android.util.Log
 import com.fazalulabid.samespacemusic.data.remote.MusicTrackApiService
 import com.fazalulabid.samespacemusic.data.remote.dto.toMusicTrackList
+import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackLocalDataSource
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.domain.repository.MusicTrackRepository
 import javax.inject.Inject
 
 class MusicTrackRepositoryImpl @Inject constructor(
-    private val apiService: MusicTrackApiService
+    private val apiService: MusicTrackApiService,
+    private val musicTrackLocalDataSource: MusicTrackLocalDataSource
 ) : MusicTrackRepository {
 
     override suspend fun getAllSongs(): List<MusicTrack> {

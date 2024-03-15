@@ -1,8 +1,11 @@
 package com.fazalulabid.samespacemusic.di
 
 import com.fazalulabid.samespacemusic.BuildConfig
+import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import com.fazalulabid.samespacemusic.data.remote.MusicTrackApiService
 import com.fazalulabid.samespacemusic.data.repository.MusicTrackRepositoryImpl
+import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackLocalDataSource
+import com.fazalulabid.samespacemusic.data.repository.datasourceimpl.MusicTrackLocalDataSourceImpl
 import com.fazalulabid.samespacemusic.domain.repository.MusicTrackRepository
 import dagger.Module
 import dagger.Provides
@@ -30,8 +33,18 @@ object MusicTrackModule {
 
     @Provides
     @Singleton
+    fun provideMusicTracksLocalDataSource(
+        db: MusicTracksDatabase
+    ): MusicTrackLocalDataSource = MusicTrackLocalDataSourceImpl(db.musicTracksDao())
+
+    @Provides
+    @Singleton
     fun provideMusicTrackRepository(
-        apiService: MusicTrackApiService
+        apiService: MusicTrackApiService,
+        musicTrackLocalDataSource: MusicTrackLocalDataSource
     ): MusicTrackRepository =
-        MusicTrackRepositoryImpl(apiService)
+        MusicTrackRepositoryImpl(
+            apiService = apiService,
+            musicTrackLocalDataSource = musicTrackLocalDataSource
+        )
 }
