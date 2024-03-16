@@ -32,9 +32,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: MusicTrackEvent) = when (event) {
-        is MusicTrackEvent.SelectMusicTrack -> {
-            selectMusicTrack(event.id)
+    fun onEvent(event: MusicTrackEvent) {
+        when (event) {
+            is MusicTrackEvent.SelectMusicTrack -> {
+                selectMusicTrack(event.id)
+            }
+
+            is MusicTrackEvent.GetMusicTracks -> {
+                viewModelScope.launch {
+                    getAllMusicTracks(needToFetchFromApi = event.isRefresh)
+                }
+            }
         }
     }
 
@@ -51,10 +59,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllMusicTracks() {
+    private suspend fun getAllMusicTracks(needToFetchFromApi: Boolean = false) {
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
         getAllMusicTracksUseCase(
-            GetAllMusicTracksUseCase.Params(needToFetchFromApi = true)
+            GetAllMusicTracksUseCase.Params(needToFetchFromApi)
         ).collect { result ->
             when (result) {
                 is Resource.Error -> {

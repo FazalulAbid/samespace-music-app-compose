@@ -9,12 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,25 +30,18 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.core.util.Constants.homeScreenTabs
-import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
 import com.fazalulabid.samespacemusic.presentation.components.HomeTabRow
-import com.fazalulabid.samespacemusic.presentation.components.MusicTrackList
-import com.fazalulabid.samespacemusic.presentation.components.SongItem
 import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerCollapsedContent
 import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpandedContent
-import com.fazalulabid.samespacemusic.presentation.ui.theme.CollapsedPlayerSize
-import com.fazalulabid.samespacemusic.presentation.ui.theme.PrimaryButtonHeight
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
-import com.fazalulabid.samespacemusic.presentation.util.TabItem
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -67,15 +54,12 @@ fun HomeScreen(
 ) {
 
     val musicTrackState = viewModel.musicTrackState.value
-
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
-
     val pagerState = rememberPagerState {
         homeScreenTabs.size
     }
-
     var bottomTabRowHeightInDp by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
     val playerSheetState = rememberModalBottomSheetState(
@@ -84,6 +68,7 @@ fun HomeScreen(
     var isPlayerSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = musicTrackState.isLoading)
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -101,6 +86,7 @@ fun HomeScreen(
             animationSpec = tween(300)
         )
     }
+
     LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
         if (!pagerState.isScrollInProgress) {
             selectedTabIndex = pagerState.currentPage
@@ -112,18 +98,25 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        MusicTracksSection(
-            pagerState = pagerState,
-            imageLoader = imageLoader,
-            isLoading = musicTrackState.isLoading,
-            items = musicTrackState.musicTracks,
-            contentPadding = PaddingValues(
-                bottom = bottomTabRowHeightInDp + StandardScreenPadding
-            ),
-            onItemClick = { musicTrackId ->
-                viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                viewModel.onEvent(MusicTrackEvent.GetMusicTracks(isRefresh = true))
             }
-        )
+        ) {
+            MusicTracksSection(
+                pagerState = pagerState,
+                imageLoader = imageLoader,
+                isLoading = musicTrackState.isLoading,
+                items = musicTrackState.musicTracks,
+                contentPadding = PaddingValues(
+                    bottom = bottomTabRowHeightInDp + StandardScreenPadding
+                ),
+                onItemClick = { musicTrackId ->
+                    viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
+                }
+            )
+        }
         GradientBox(
             modifier = Modifier.fillMaxSize(),
             bottomGradientHeight = bottomTabRowHeightInDp,

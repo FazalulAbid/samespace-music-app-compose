@@ -33,8 +33,8 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = isLoading,
-        enter = fadeInAnimation,
-        exit = fadeOutAnimation
+        enter = fadeIn(),
+        exit = fadeOut()
     ) {
         LazyColumn {
             items(12) {
