@@ -28,8 +28,6 @@ fun MusicTracksSection(
     contentPadding: PaddingValues,
     onItemClick: (Int) -> Unit
 ) {
-    val fadeInAnimation = fadeIn(animationSpec = TweenSpec(durationMillis = 1000))
-    val fadeOutAnimation = fadeOut(animationSpec = TweenSpec(durationMillis = 500))
 
     AnimatedVisibility(
         visible = isLoading,
@@ -45,8 +43,8 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = !isLoading,
-        enter = fadeInAnimation,
-        exit = fadeOutAnimation
+        enter = fadeIn(animationSpec = TweenSpec(durationMillis = 1000)),
+        exit = fadeOut(animationSpec = TweenSpec(durationMillis = 500))
     ) {
         HorizontalPager(
             state = pagerState,
