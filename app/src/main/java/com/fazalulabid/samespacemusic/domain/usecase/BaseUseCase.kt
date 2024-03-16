@@ -1,6 +1,7 @@
 package com.fazalulabid.samespacemusic.domain.usecase
 
 import com.fazalulabid.samespacemusic.R
+import com.fazalulabid.samespacemusic.core.util.NoConnectionException
 import com.fazalulabid.samespacemusic.core.util.Resource
 import com.fazalulabid.samespacemusic.presentation.util.UiText
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +31,7 @@ abstract class BaseUseCase<Params, OutputType> {
                         ?: UiText.StringResource(R.string.an_unexpected_error_occurred)
                 )
             )
+            is NoConnectionException -> emit(Resource.Error(UiText.DynamicString(e.message), error = e))
             is IOException -> emit(Resource.Error(UiText.StringResource(R.string.couldn_t_reach_server)))
             else -> {
                 // Handle other types of exceptions or log them

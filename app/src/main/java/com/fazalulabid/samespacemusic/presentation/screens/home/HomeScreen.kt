@@ -112,6 +112,10 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     bottom = bottomTabRowHeightInDp + StandardScreenPadding
                 ),
+                error = musicTrackState.error,
+                onErrorRetry = {
+                    viewModel.onEvent(MusicTrackEvent.GetMusicTracks())
+                },
                 onItemClick = { musicTrackId ->
                     viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
                 }

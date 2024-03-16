@@ -6,6 +6,7 @@ import androidx.core.content.contentValuesOf
 import androidx.room.Room
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.BuildConfig
+import com.fazalulabid.samespacemusic.core.util.NetworkConnectionInterceptor
 import com.fazalulabid.samespacemusic.data.datastore.DataStoreHelper
 import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import dagger.Module
@@ -34,6 +35,7 @@ object AppModule {
         }
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(NetworkConnectionInterceptor(context))
             .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .build()
