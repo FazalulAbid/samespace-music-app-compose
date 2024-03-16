@@ -53,7 +53,9 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getAllMusicTracks() {
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
-        getAllMusicTracksUseCase(Unit).collect { result ->
+        getAllMusicTracksUseCase(
+            GetAllMusicTracksUseCase.Params(needToFetchFromApi = false)
+        ).collect { result ->
             when (result) {
                 is Resource.Error -> {
                     _musicTrackState.value = MusicTracksState(

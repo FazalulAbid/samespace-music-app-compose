@@ -6,9 +6,11 @@ import javax.inject.Inject
 
 class GetAllMusicTracksUseCase @Inject constructor(
     private val repository: MusicTrackRepository
-) : BaseUseCase<Unit, List<MusicTrack>>() {
+) : BaseUseCase<GetAllMusicTracksUseCase.Params, List<MusicTrack>>() {
 
-    override suspend fun execute(params: Unit): List<MusicTrack> {
-        return repository.getAllSongs()
+    data class Params(val needToFetchFromApi: Boolean)
+
+    override suspend fun execute(params: Params): List<MusicTrack> {
+        return repository.getAllSongs(params.needToFetchFromApi)
     }
 }

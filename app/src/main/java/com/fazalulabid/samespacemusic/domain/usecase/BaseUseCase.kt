@@ -30,7 +30,6 @@ abstract class BaseUseCase<Params, OutputType> {
                         ?: UiText.StringResource(R.string.an_unexpected_error_occurred)
                 )
             )
-
             is IOException -> emit(Resource.Error(UiText.StringResource(R.string.couldn_t_reach_server)))
             else -> {
                 // Handle other types of exceptions or log them

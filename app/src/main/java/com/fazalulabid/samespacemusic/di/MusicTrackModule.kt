@@ -1,11 +1,15 @@
 package com.fazalulabid.samespacemusic.di
 
 import com.fazalulabid.samespacemusic.BuildConfig
+import com.fazalulabid.samespacemusic.core.util.CacheManager
+import com.fazalulabid.samespacemusic.data.datastore.DataStoreHelper
 import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import com.fazalulabid.samespacemusic.data.remote.MusicTrackApiService
 import com.fazalulabid.samespacemusic.data.repository.MusicTrackRepositoryImpl
 import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackLocalDataSource
+import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackRemoteDataSource
 import com.fazalulabid.samespacemusic.data.repository.datasourceimpl.MusicTrackLocalDataSourceImpl
+import com.fazalulabid.samespacemusic.data.repository.datasourceimpl.MusicTrackRemoteDataSourceImpl
 import com.fazalulabid.samespacemusic.domain.repository.MusicTrackRepository
 import dagger.Module
 import dagger.Provides
@@ -33,6 +37,12 @@ object MusicTrackModule {
 
     @Provides
     @Singleton
+    fun provideMusicTracksRemoteDataSource(
+        apiService: MusicTrackApiService
+    ): MusicTrackRemoteDataSource = MusicTrackRemoteDataSourceImpl(apiService)
+
+    @Provides
+    @Singleton
     fun provideMusicTracksLocalDataSource(
         db: MusicTracksDatabase
     ): MusicTrackLocalDataSource = MusicTrackLocalDataSourceImpl(db.musicTracksDao())
@@ -40,11 +50,15 @@ object MusicTrackModule {
     @Provides
     @Singleton
     fun provideMusicTrackRepository(
-        apiService: MusicTrackApiService,
-        musicTrackLocalDataSource: MusicTrackLocalDataSource
+        remoteDataSource: MusicTrackRemoteDataSource,
+        localDataSource: MusicTrackLocalDataSource,
+        dataStoreHelper: DataStoreHelper,
+        cacheManager: CacheManager
     ): MusicTrackRepository =
         MusicTrackRepositoryImpl(
-            apiService = apiService,
-            musicTrackLocalDataSource = musicTrackLocalDataSource
+            remoteDataSource = remoteDataSource,
+            localDataSource = localDataSource,
+            dataStoreHelper = dataStoreHelper,
+            cacheManager = cacheManager
         )
 }

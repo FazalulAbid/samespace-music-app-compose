@@ -6,6 +6,7 @@ import androidx.core.content.contentValuesOf
 import androidx.room.Room
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.BuildConfig
+import com.fazalulabid.samespacemusic.data.datastore.DataStoreHelper
 import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import dagger.Module
 import dagger.Provides
@@ -46,6 +47,10 @@ object AppModule {
             MusicTracksDatabase::class.java,
             MusicTracksDatabase.DATABASE_NAME
         ).build()
+
+    @Provides
+    @Singleton
+    fun provideDataStoreHelper(@ApplicationContext context: Context) = DataStoreHelper(context)
 
     @Provides
     @Singleton
