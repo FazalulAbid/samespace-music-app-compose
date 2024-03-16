@@ -7,6 +7,7 @@ import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackLocal
 import com.fazalulabid.samespacemusic.data.repository.datasource.MusicTrackRemoteDataSource
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.domain.repository.MusicTrackRepository
+import kotlinx.coroutines.delay
 
 class MusicTrackRepositoryImpl(
     private val remoteDataSource: MusicTrackRemoteDataSource,
@@ -39,6 +40,7 @@ class MusicTrackRepositoryImpl(
 
     private suspend fun getMusicTracksFromApi(): List<MusicTrack> {
         lateinit var musicTracks: List<MusicTrack>
+        delay(3000)
         val response = remoteDataSource.getAllMusicTracks()
         val body = response.body()
         if (body != null) {

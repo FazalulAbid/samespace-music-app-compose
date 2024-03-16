@@ -112,40 +112,18 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxSize()
-        ) { page ->
-            when (page) {
-                FOR_YOU_PAGE -> {
-                    MusicTrackList(
-                        imageLoader = imageLoader,
-                        items = musicTrackState.musicTracks,
-                        contentPadding = PaddingValues(
-                            bottom = bottomTabRowHeightInDp + StandardScreenPadding
-                        ),
-                        onItemClick = { musicTrackId ->
-                            viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
-                        }
-                    )
-                }
-
-                TOP_TRACKS_PAGE -> {
-                    MusicTrackList(
-                        imageLoader = imageLoader,
-                        items = musicTrackState.musicTracks,
-                        contentPadding = PaddingValues(
-                            bottom = bottomTabRowHeightInDp + StandardScreenPadding
-                        ),
-                        isTopTrackList = true,
-                        onItemClick = { musicTrackId ->
-                            viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
-                        }
-                    )
-                }
+        MusicTracksSection(
+            pagerState = pagerState,
+            imageLoader = imageLoader,
+            isLoading = musicTrackState.isLoading,
+            items = musicTrackState.musicTracks,
+            contentPadding = PaddingValues(
+                bottom = bottomTabRowHeightInDp + StandardScreenPadding
+            ),
+            onItemClick = { musicTrackId ->
+                viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
             }
-        }
+        )
         GradientBox(
             modifier = Modifier.fillMaxSize(),
             bottomGradientHeight = bottomTabRowHeightInDp,
