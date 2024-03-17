@@ -30,7 +30,7 @@ fun MusicTrackList(
             SongItem(
                 musicTrack = it,
                 imageLoader = imageLoader,
-                onClick = { onItemClick(it.id) }
+                onClick = { onItemClick(items.indexOf(it)) }
             )
         }
     }

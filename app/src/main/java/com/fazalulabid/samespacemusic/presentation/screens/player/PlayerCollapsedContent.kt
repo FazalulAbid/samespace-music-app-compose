@@ -1,11 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
@@ -13,11 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -44,8 +36,6 @@ import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.AvatarSize
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeSmall8
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeStandard16
-import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeTiny2
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.fazalulabid.samespacemusic.presentation.util.fromHex
 
@@ -56,6 +46,7 @@ fun PlayerCollapsedContent(
     imageLoader: ImageLoader,
     thumbnailSize: Dp = AvatarSize,
     thumbnailShape: Shape = MaterialTheme.shapes.large,
+    isPlaying: Boolean,
     onClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
@@ -129,10 +120,8 @@ fun PlayerCollapsedContent(
                 )
             }
             StandardIconButton(
-                onClick = {
-                    onActionClick()
-                },
-                icon = if (true) {
+                onClick = onActionClick,
+                icon = if (isPlaying) {
                     R.drawable.pause
                 } else R.drawable.play,
                 color = MaterialTheme.colorScheme.background,

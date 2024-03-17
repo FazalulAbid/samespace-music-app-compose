@@ -49,6 +49,9 @@ import com.fazalulabid.samespacemusic.presentation.util.fromHex
 fun PlayerExpandedContent(
     modifier: Modifier = Modifier,
     currentlyPlayingMusicTrack: MusicTrack,
+    currentlyPlayingMusicTrackIndex: Int,
+    totalDuration: Int,
+    isPlaying: Boolean,
     musicTrackThumbnailList: List<MusicTrackThumbnail>,
     imageLoader: ImageLoader,
     onThumbnailPagerChanged: (Int) -> Unit
@@ -97,6 +100,7 @@ fun PlayerExpandedContent(
                 .fillMaxWidth(),
             items = musicTrackThumbnailList,
             imageLoader = imageLoader,
+            currentPlayingMusicTrackIndex = currentlyPlayingMusicTrackIndex,
             onThumbnailPagerChanged = onThumbnailPagerChanged
         )
 
@@ -128,6 +132,7 @@ fun PlayerExpandedContent(
 
             SeekBar(
                 modifier = Modifier.padding(horizontal = StandardScreenPadding),
+                totalDuration = totalDuration,
                 onValueChange = {}
             )
         }
@@ -153,7 +158,7 @@ fun PlayerExpandedContent(
                 onClick = {
 
                 },
-                icon = if (true) {
+                icon = if (isPlaying) {
                     R.drawable.pause
                 } else R.drawable.play,
                 color = MaterialTheme.colorScheme.background,

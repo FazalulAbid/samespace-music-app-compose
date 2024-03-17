@@ -1,5 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,6 +32,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.core.util.Constants.homeScreenTabs
 import com.fazalulabid.samespacemusic.presentation.components.GradientBox
@@ -40,7 +43,7 @@ import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpanded
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -49,7 +52,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     imageLoader: ImageLoader,
-    coroutineScope: CoroutineScope,
+    player: ExoPlayer,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -70,10 +73,39 @@ fun HomeScreen(
     }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = musicTrackState.isLoading)
 
+    LaunchedEffect(musicTrackState.currentlyPlayingTrackIndex) {
+        musicTrackState.currentlyPlayingTrackIndex?.let { index ->
+            player.seekTo(index.toInt(), 0)
+            player.play()
+        }
+    }
+
+    LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
+        delay(1000)
+        viewModel.onEvent(MusicTrackEvent.SetCurrentPosition(player.currentPosition))
+    }
+
+    LaunchedEffect(musicTrackState.currentPosition) {
+        viewModel.onEvent(MusicTrackEvent.SetSliderPosition(musicTrackState.currentPosition))
+    }
+
+    LaunchedEffect(player.duration) {
+        if (player.duration > 0) {
+            viewModel.onEvent(MusicTrackEvent.SetTotalDuration(player.duration))
+        }
+    }
+
+    LaunchedEffect(musicTrackState.musicTracks) {
+        musicTrackState.musicTracks.forEach { musicTrack ->
+            Log.d("Hello", "HomeScreen: ${musicTrack.getMediaUrl()}")
+            player.addMediaItem(MediaItem.fromUri(musicTrack.getMediaUrl()))
+        }
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is HomeScreenUiEvent.OpenPlayerBottomSheet -> {
+                is HomeScreenUiEvent.PlaySelectedMusic -> {
                     isPlayerSheetOpen = true
                 }
             }
@@ -116,15 +148,15 @@ fun HomeScreen(
                 onErrorRetry = {
                     viewModel.onEvent(MusicTrackEvent.GetMusicTracks())
                 },
-                onItemClick = { musicTrackId ->
-                    viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
+                onItemClick = { musicTrackIndex ->
+                    viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
                 }
             )
         }
         GradientBox(
             modifier = Modifier.fillMaxSize(),
             bottomGradientHeight = bottomTabRowHeightInDp,
-            isCurrentlyPlaying = musicTrackState.currentlyPlaying != null
+            isCurrentlyPlaying = player.isPlaying
         ) {
             Column(
                 modifier = Modifier
@@ -135,21 +167,23 @@ fun HomeScreen(
                         }
                     }
             ) {
-                musicTrackState.currentlyPlaying?.let { musicTrack ->
+                musicTrackState.currentlyPlayingTrackIndex?.let { index ->
                     PlayerCollapsedContent(
-                        currentMusicTrack = musicTrack,
+                        currentMusicTrack = musicTrackState.musicTracks[index.toInt()],
                         imageLoader = imageLoader,
+                        isPlaying = player.isPlaying,
                         onClick = {
                             isPlayerSheetOpen = true
                         },
                         onActionClick = {
-
+                            if (player.isPlaying) player.pause()
+                            else player.play()
                         }
                     )
                 }
                 HomeTabRow(
                     modifier = Modifier.background(
-                        if (musicTrackState.currentlyPlaying != null) {
+                        if (musicTrackState.currentlyPlayingTrackIndex != null) {
                             MaterialTheme.colorScheme.background
                         } else Color.Transparent
                     ),
@@ -180,13 +214,16 @@ fun HomeScreen(
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                 ) {
-                    musicTrackState.currentlyPlaying?.let { currentlyPlayingMusicTrack ->
+                    musicTrackState.currentlyPlayingTrackIndex?.let { index ->
                         PlayerExpandedContent(
-                            currentlyPlayingMusicTrack = currentlyPlayingMusicTrack,
+                            currentlyPlayingMusicTrack = musicTrackState.musicTracks[index.toInt()],
                             musicTrackThumbnailList = musicTrackState.musicTrackThumbnails,
                             imageLoader = imageLoader,
-                            onThumbnailPagerChanged = { musicTrackId ->
-                                viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackId))
+                            currentlyPlayingMusicTrackIndex = index.toInt(),
+                            totalDuration = player.duration.toInt(),
+                            isPlaying = player.isPlaying,
+                            onThumbnailPagerChanged = { musicTrackIndex ->
+                                viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
                             }
                         )
                     }

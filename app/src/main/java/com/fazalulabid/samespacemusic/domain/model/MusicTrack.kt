@@ -17,6 +17,8 @@ data class MusicTrack(
 ) {
 
     fun getCoverImageUrl() = Constants.BASE_IMAGE_URL + cover
+
+    fun getMediaUrl() = url.replace(" ", "")
 }
 
 fun Iterable<MusicTrack>?.toMusicTrackThumbnails(): List<MusicTrackThumbnail>? {

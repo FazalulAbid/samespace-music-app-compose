@@ -18,12 +18,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
+import com.fazalulabid.samespacemusic.presentation.screens.home.MusicTrackEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeekBar(
     modifier: Modifier = Modifier,
     sliderEndShape: Shape = MaterialTheme.shapes.large,
+    totalDuration: Int,
     onValueChange: (Float) -> Unit,
 ) {
 
@@ -62,7 +64,7 @@ fun SeekBar(
                 )
             )
             Text(
-                text = "03:50",
+                text = "$totalDuration",
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Normal

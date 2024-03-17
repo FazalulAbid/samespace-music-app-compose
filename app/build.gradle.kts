@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.accompanist.swiperefresh)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.media3.exoplayer)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

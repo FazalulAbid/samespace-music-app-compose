@@ -3,6 +3,7 @@ package com.fazalulabid.samespacemusic.di
 import android.app.Application
 import android.content.Context
 import androidx.core.content.contentValuesOf
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.room.Room
 import coil.ImageLoader
 import com.fazalulabid.samespacemusic.BuildConfig
@@ -61,4 +62,9 @@ object AppModule {
             .crossfade(true)
             .crossfade(200)
             .build()
+
+    @Provides
+    @Singleton
+    fun provideExoPlayer(@ApplicationContext context: Context): ExoPlayer =
+        ExoPlayer.Builder(context).build()
 }

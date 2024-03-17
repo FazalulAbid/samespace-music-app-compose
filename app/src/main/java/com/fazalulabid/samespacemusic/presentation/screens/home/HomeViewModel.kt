@@ -5,8 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazalulabid.samespacemusic.core.util.Resource
-import com.fazalulabid.samespacemusic.domain.model.MusicTrack
-import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
 import com.fazalulabid.samespacemusic.domain.model.toMusicTrackThumbnails
 import com.fazalulabid.samespacemusic.domain.usecase.GetAllMusicTracksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +33,7 @@ class HomeViewModel @Inject constructor(
     fun onEvent(event: MusicTrackEvent) {
         when (event) {
             is MusicTrackEvent.SelectMusicTrack -> {
-                selectMusicTrack(event.id)
+                selectMusicTrack(event.index)
             }
 
             is MusicTrackEvent.GetMusicTracks -> {
@@ -43,21 +41,36 @@ class HomeViewModel @Inject constructor(
                     getAllMusicTracks(needToFetchFromApi = event.isRefresh)
                 }
             }
-        }
-    }
 
-    private fun selectMusicTrack(musicTrackId: Int) {
-        val selectedMusicTrack =
-            _musicTrackState.value.musicTracks.firstOrNull { it.id == musicTrackId }
-        selectedMusicTrack?.let { selectedTrack ->
-            _musicTrackState.value = musicTrackState.value.copy(
-                currentlyPlaying = selectedTrack
-            )
-            viewModelScope.launch {
-                _eventFlow.emit(HomeScreenUiEvent.OpenPlayerBottomSheet(selectedTrack))
+            is MusicTrackEvent.SetCurrentPosition -> {
+                _musicTrackState.value = musicTrackState.value.copy(
+                    currentPosition = event.currentPosition
+                )
+            }
+
+            is MusicTrackEvent.SetSliderPosition -> {
+                _musicTrackState.value = musicTrackState.value.copy(
+                    currentPosition = event.sliderPosition
+                )
+            }
+
+            is MusicTrackEvent.SetTotalDuration -> {
+                _musicTrackState.value = musicTrackState.value.copy(
+                    currentPosition = event.totalDuration
+                )
             }
         }
     }
+
+    private fun selectMusicTrack(musicTrackIndex: Long) {
+        _musicTrackState.value = musicTrackState.value.copy(
+            currentlyPlayingTrackIndex = musicTrackIndex
+        )
+        viewModelScope.launch {
+            _eventFlow.emit(HomeScreenUiEvent.PlaySelectedMusic)
+        }
+    }
+
 
     private suspend fun getAllMusicTracks(needToFetchFromApi: Boolean = false) {
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)

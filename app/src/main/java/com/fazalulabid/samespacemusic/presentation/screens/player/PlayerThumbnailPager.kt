@@ -38,11 +38,16 @@ fun PlayerThumbnailPager(
     contentPadding: PaddingValues = PaddingValues(horizontal = 3 * StandardScreenPadding),
     items: List<MusicTrackThumbnail>,
     imageLoader: ImageLoader,
+    currentPlayingMusicTrackIndex: Int,
     thumbnailShape: Shape = MaterialTheme.shapes.extraSmall,
     cardElevation: Dp = 0.dp,
     onThumbnailPagerChanged: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+
+    LaunchedEffect(Unit) {
+        pagerState.animateScrollToPage(currentPlayingMusicTrackIndex)
+    }
 
     LaunchedEffect(pagerState.currentPage) {
         onThumbnailPagerChanged(pagerState.currentPage)
