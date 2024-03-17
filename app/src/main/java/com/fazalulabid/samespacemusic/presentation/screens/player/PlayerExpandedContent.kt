@@ -35,7 +35,7 @@ import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.core.util.Constants.BACKGROUND_ANIMATION_DURATION
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
-import com.fazalulabid.samespacemusic.presentation.components.SeekBar
+import com.fazalulabid.samespacemusic.presentation.components.TrackSeekBar
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PlayPauseButtonSize
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeHuge48
@@ -50,11 +50,15 @@ fun PlayerExpandedContent(
     modifier: Modifier = Modifier,
     currentlyPlayingMusicTrack: MusicTrack,
     currentlyPlayingMusicTrackIndex: Int,
-    totalDuration: Int,
+    sliderPosition: Float,
+    totalDuration: Long,
+    currentPosition: Long,
     isPlaying: Boolean,
     musicTrackThumbnailList: List<MusicTrackThumbnail>,
     imageLoader: ImageLoader,
-    onThumbnailPagerChanged: (Int) -> Unit
+    onThumbnailPagerChanged: (Int) -> Unit,
+    onSliderValueChange: (Float) -> Unit,
+    onSliderValueChangeFinished: () -> Unit
 ) {
     val windowInsets = WindowInsets.systemBars
 
@@ -130,10 +134,13 @@ fun PlayerExpandedContent(
 
             Spacer(modifier = Modifier.height(SizeLarge24))
 
-            SeekBar(
+            TrackSeekBar(
                 modifier = Modifier.padding(horizontal = StandardScreenPadding),
                 totalDuration = totalDuration,
-                onValueChange = {}
+                value = sliderPosition,
+                onValueChange = onSliderValueChange,
+                currentPosition = currentPosition,
+                onValueChangeFinished = onSliderValueChangeFinished
             )
         }
 

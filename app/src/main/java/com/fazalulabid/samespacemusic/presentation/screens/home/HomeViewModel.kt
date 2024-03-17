@@ -41,24 +41,6 @@ class HomeViewModel @Inject constructor(
                     getAllMusicTracks(needToFetchFromApi = event.isRefresh)
                 }
             }
-
-            is MusicTrackEvent.SetCurrentPosition -> {
-                _musicTrackState.value = musicTrackState.value.copy(
-                    currentPosition = event.currentPosition
-                )
-            }
-
-            is MusicTrackEvent.SetSliderPosition -> {
-                _musicTrackState.value = musicTrackState.value.copy(
-                    currentPosition = event.sliderPosition
-                )
-            }
-
-            is MusicTrackEvent.SetTotalDuration -> {
-                _musicTrackState.value = musicTrackState.value.copy(
-                    currentPosition = event.totalDuration
-                )
-            }
         }
     }
 

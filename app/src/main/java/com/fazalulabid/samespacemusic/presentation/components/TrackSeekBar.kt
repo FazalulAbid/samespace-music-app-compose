@@ -18,15 +18,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
-import com.fazalulabid.samespacemusic.presentation.screens.home.MusicTrackEvent
+import com.fazalulabid.samespacemusic.core.util.convertToMinutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SeekBar(
+fun TrackSeekBar(
     modifier: Modifier = Modifier,
+    value: Float,
     sliderEndShape: Shape = MaterialTheme.shapes.large,
-    totalDuration: Int,
+    totalDuration: Long,
+    currentPosition: Long,
     onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -36,10 +39,7 @@ fun SeekBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(sliderEndShape),
-            value = .7f,
-            onValueChange = {
-                onValueChange(it)
-            },
+            value = value,
             colors = SliderDefaults.colors(
                 activeTrackColor = MaterialTheme.colorScheme.onBackground,
                 inactiveTickColor = MaterialTheme.colorScheme.onSurface
@@ -49,7 +49,9 @@ fun SeekBar(
                     interactionSource = interactionSource,
                     thumbSize = DpSize.Zero
                 )
-            }
+            },
+            onValueChange = onValueChange,
+            onValueChangeFinished = onValueChangeFinished,
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -57,14 +59,15 @@ fun SeekBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "0s",
+                text = currentPosition.convertToMinutes(),
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Normal
                 )
             )
+            val remainTime = totalDuration - currentPosition
             Text(
-                text = "$totalDuration",
+                text = if (remainTime >= 0) remainTime.convertToMinutes() else "",
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Normal

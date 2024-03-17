@@ -10,7 +10,4 @@ data class MusicTracksState(
     val musicTrackThumbnails: List<MusicTrackThumbnail> = emptyList(),
     val error: UiText? = null,
     val currentlyPlayingTrackIndex: Long? = null,
-    val currentPosition: Long = 0,
-    val sliderPosition: Long = 0,
-    val totalDuration: Long = 0
 )

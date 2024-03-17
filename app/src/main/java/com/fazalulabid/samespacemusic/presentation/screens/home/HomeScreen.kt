@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,36 +69,32 @@ fun HomeScreen(
     val playerSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    var isPlayerSheetOpen by rememberSaveable {
-        mutableStateOf(false)
-    }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = musicTrackState.isLoading)
+    var isPlayerSheetOpen by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(musicTrackState.currentlyPlayingTrackIndex) {
-        musicTrackState.currentlyPlayingTrackIndex?.let { index ->
-            player.seekTo(index.toInt(), 0)
-            player.play()
-        }
-    }
+    // Player States
+    val isPlaying = remember { mutableStateOf(false) }
+    val currentPosition = remember { mutableLongStateOf(0) }
+    val sliderPosition = remember { mutableLongStateOf(0) }
+    val totalDuration = remember { mutableLongStateOf(0) }
 
     LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
         delay(1000)
-        viewModel.onEvent(MusicTrackEvent.SetCurrentPosition(player.currentPosition))
+        currentPosition.longValue = player.currentPosition
     }
 
-    LaunchedEffect(musicTrackState.currentPosition) {
-        viewModel.onEvent(MusicTrackEvent.SetSliderPosition(musicTrackState.currentPosition))
+    LaunchedEffect(currentPosition.longValue) {
+        sliderPosition.longValue = currentPosition.longValue
     }
 
     LaunchedEffect(player.duration) {
         if (player.duration > 0) {
-            viewModel.onEvent(MusicTrackEvent.SetTotalDuration(player.duration))
+            totalDuration.longValue = player.duration
         }
     }
 
     LaunchedEffect(musicTrackState.musicTracks) {
         musicTrackState.musicTracks.forEach { musicTrack ->
-            Log.d("Hello", "HomeScreen: ${musicTrack.getMediaUrl()}")
             player.addMediaItem(MediaItem.fromUri(musicTrack.getMediaUrl()))
         }
     }
@@ -156,7 +153,7 @@ fun HomeScreen(
         GradientBox(
             modifier = Modifier.fillMaxSize(),
             bottomGradientHeight = bottomTabRowHeightInDp,
-            isCurrentlyPlaying = player.isPlaying
+            isCurrentlyPlaying = isPlaying.value
         ) {
             Column(
                 modifier = Modifier
@@ -171,13 +168,14 @@ fun HomeScreen(
                     PlayerCollapsedContent(
                         currentMusicTrack = musicTrackState.musicTracks[index.toInt()],
                         imageLoader = imageLoader,
-                        isPlaying = player.isPlaying,
+                        isPlaying = isPlaying.value,
                         onClick = {
                             isPlayerSheetOpen = true
                         },
                         onActionClick = {
-                            if (player.isPlaying) player.pause()
+                            if (isPlaying.value) player.pause()
                             else player.play()
+                            isPlaying.value = player.isPlaying
                         }
                     )
                 }
@@ -220,11 +218,20 @@ fun HomeScreen(
                             musicTrackThumbnailList = musicTrackState.musicTrackThumbnails,
                             imageLoader = imageLoader,
                             currentlyPlayingMusicTrackIndex = index.toInt(),
-                            totalDuration = player.duration.toInt(),
-                            isPlaying = player.isPlaying,
+                            totalDuration = totalDuration.longValue,
+                            isPlaying = isPlaying.value,
                             onThumbnailPagerChanged = { musicTrackIndex ->
                                 viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
-                            }
+                            },
+                            onSliderValueChange = {
+                                sliderPosition.longValue = it.toLong()
+                            },
+                            onSliderValueChangeFinished = {
+                                currentPosition.longValue = sliderPosition.longValue
+                                player.seekTo(sliderPosition.longValue)
+                            },
+                            currentPosition = currentPosition.longValue,
+                            sliderPosition = sliderPosition.longValue.toFloat()
                         )
                     }
                 }
