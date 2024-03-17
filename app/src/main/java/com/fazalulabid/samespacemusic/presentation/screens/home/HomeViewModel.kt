@@ -1,5 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,13 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: MusicTrackEvent) {
         when (event) {
+            is MusicTrackEvent.SelectMusicTrackAndPlay -> {
+                viewModelScope.launch {
+                    selectMusicTrack(event.index)
+                    _eventFlow.emit(HomeScreenUiEvent.PlayMusicTrack(index = event.index.toInt()))
+                }
+            }
+
             is MusicTrackEvent.SelectMusicTrack -> {
                 selectMusicTrack(event.index)
             }
@@ -48,9 +56,6 @@ class HomeViewModel @Inject constructor(
         _musicTrackState.value = musicTrackState.value.copy(
             currentlyPlayingTrackIndex = musicTrackIndex
         )
-        viewModelScope.launch {
-            _eventFlow.emit(HomeScreenUiEvent.PlaySelectedMusic)
-        }
     }
 
 

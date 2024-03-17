@@ -1,6 +1,5 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -102,8 +101,11 @@ fun HomeScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is HomeScreenUiEvent.PlaySelectedMusic -> {
+                is HomeScreenUiEvent.PlayMusicTrack -> {
                     isPlayerSheetOpen = true
+                    player.seekTo(event.index, 0)
+                    player.play()
+                    isPlaying.value = true
                 }
             }
         }
@@ -120,6 +122,7 @@ fun HomeScreen(
         if (!pagerState.isScrollInProgress) {
             selectedTabIndex = pagerState.currentPage
         }
+
     }
 
     Box(
@@ -146,7 +149,7 @@ fun HomeScreen(
                     viewModel.onEvent(MusicTrackEvent.GetMusicTracks())
                 },
                 onItemClick = { musicTrackIndex ->
-                    viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
+                    viewModel.onEvent(MusicTrackEvent.SelectMusicTrackAndPlay(musicTrackIndex.toLong()))
                 }
             )
         }
@@ -222,6 +225,9 @@ fun HomeScreen(
                             isPlaying = isPlaying.value,
                             onThumbnailPagerChanged = { musicTrackIndex ->
                                 viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
+                                if (musicTrackState.currentlyPlayingTrackIndex.toInt() != musicTrackIndex) {
+                                    player.seekTo(musicTrackIndex, 0)
+                                }
                             },
                             onSliderValueChange = {
                                 sliderPosition.longValue = it.toLong()

@@ -44,7 +44,6 @@ fun PlayerThumbnailPager(
     onThumbnailPagerChanged: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
-
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(currentPlayingMusicTrackIndex)
     }
