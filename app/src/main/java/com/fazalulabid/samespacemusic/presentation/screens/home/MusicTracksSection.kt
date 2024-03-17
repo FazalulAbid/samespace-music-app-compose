@@ -2,6 +2,7 @@ package com.fazalulabid.samespacemusic.presentation.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,7 +45,7 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = isLoading,
-        enter = fadeIn(),
+        enter = fadeIn(animationSpec = tween(100)),
         exit = fadeOut()
     ) {
         LazyColumn {
@@ -56,8 +57,8 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = !isLoading,
-        enter = fadeIn(animationSpec = TweenSpec(durationMillis = 1000)),
-        exit = fadeOut(animationSpec = TweenSpec(durationMillis = 500))
+        enter = fadeIn(animationSpec = TweenSpec(1000)),
+        exit = fadeOut(animationSpec = TweenSpec(500))
     ) {
         HorizontalPager(
             state = pagerState,
@@ -88,7 +89,7 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = error != null,
-        enter = fadeIn(animationSpec = TweenSpec(durationMillis = 1000)),
+        enter = fadeIn(animationSpec = TweenSpec(1000)),
         exit = fadeOut()
     ) {
         Column(

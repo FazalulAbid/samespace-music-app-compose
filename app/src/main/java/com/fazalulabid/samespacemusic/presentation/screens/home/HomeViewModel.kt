@@ -1,5 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -66,6 +67,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun getAllMusicTracks(needToFetchFromApi: Boolean = false) {
+        Log.d(
+            "Hello Before",
+            "getAllMusicTracks: ${_musicTrackState.value.currentlyPlayingTrackIndex}"
+        )
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
         getAllMusicTracksUseCase(
             GetAllMusicTracksUseCase.Params(needToFetchFromApi)
@@ -78,13 +83,22 @@ class HomeViewModel @Inject constructor(
                 }
 
                 is Resource.Loading -> {
-                    _musicTrackState.value = MusicTracksState(isLoading = true)
+                    _musicTrackState.value = _musicTrackState.value.copy(
+                        isLoading = true,
+                        error = null
+                    )
                 }
 
                 is Resource.Success -> {
-                    _musicTrackState.value = MusicTracksState(
+                    _musicTrackState.value = _musicTrackState.value.copy(
                         musicTracks = result.data ?: emptyList(),
-                        musicTrackThumbnails = result.data.toMusicTrackThumbnails() ?: emptyList()
+                        musicTrackThumbnails = result.data.toMusicTrackThumbnails() ?: emptyList(),
+                        isLoading = false,
+                        error = null
+                    )
+                    Log.d(
+                        "Hello",
+                        "getAllMusicTracks: ${_musicTrackState.value.currentlyPlayingTrackIndex}"
                     )
                 }
             }

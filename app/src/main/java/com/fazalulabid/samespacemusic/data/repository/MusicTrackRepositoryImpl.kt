@@ -40,7 +40,6 @@ class MusicTrackRepositoryImpl(
 
     private suspend fun getMusicTracksFromApi(): List<MusicTrack> {
         lateinit var musicTracks: List<MusicTrack>
-        delay(3000)
         val response = remoteDataSource.getAllMusicTracks()
         val body = response.body()
         if (body != null) {

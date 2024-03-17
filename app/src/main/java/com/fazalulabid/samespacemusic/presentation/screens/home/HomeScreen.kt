@@ -168,7 +168,7 @@ fun HomeScreen(
         GradientBox(
             modifier = Modifier.fillMaxSize(),
             bottomGradientHeight = bottomTabRowHeightInDp,
-            isCurrentlyPlaying = isPlaying.value
+            isCurrentlyPlaying = musicTrackState.currentlyPlayingTrackIndex != null
         ) {
             Column(
                 modifier = Modifier
@@ -179,9 +179,9 @@ fun HomeScreen(
                         }
                     }
             ) {
-                musicTrackState.currentlyPlayingTrackIndex?.let { index ->
+                if (musicTrackState.currentlyPlayingTrackIndex != null) {
                     PlayerCollapsedContent(
-                        currentMusicTrack = musicTrackState.musicTracks[index.toInt()],
+                        currentMusicTrack = musicTrackState.musicTracks[musicTrackState.currentlyPlayingTrackIndex.toInt()],
                         imageLoader = imageLoader,
                         isPlaying = isPlaying.value,
                         onClick = {
