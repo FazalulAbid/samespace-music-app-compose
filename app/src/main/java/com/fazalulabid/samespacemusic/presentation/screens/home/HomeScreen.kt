@@ -1,5 +1,6 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -28,8 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
@@ -43,7 +46,6 @@ import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpanded
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -56,7 +58,7 @@ fun HomeScreen(
     player: ExoPlayer,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
+    val localHapticFeedback = LocalHapticFeedback.current
     val musicTrackState = viewModel.musicTrackState.value
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
@@ -77,6 +79,12 @@ fun HomeScreen(
     val currentPosition = remember { mutableLongStateOf(0) }
     val sliderPosition = remember { mutableLongStateOf(0) }
     val totalDuration = remember { mutableLongStateOf(0) }
+
+    LaunchedEffect(player.currentMediaItemIndex) {
+        if (musicTrackState.musicTracks.isNotEmpty()) {
+            viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(player.currentMediaItemIndex.toLong()))
+        }
+    }
 
     LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
         delay(1000)
@@ -176,6 +184,7 @@ fun HomeScreen(
                             isPlayerSheetOpen = true
                         },
                         onActionClick = {
+                            localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             if (isPlaying.value) player.pause()
                             else player.play()
                             isPlaying.value = player.isPlaying
@@ -218,10 +227,10 @@ fun HomeScreen(
                     musicTrackState.currentlyPlayingTrackIndex?.let { index ->
                         PlayerExpandedContent(
                             currentlyPlayingMusicTrack = musicTrackState.musicTracks[index.toInt()],
+                            currentlyPlayingMusicTrackIndex = index.toInt(),
                             musicTrackThumbnailList = musicTrackState.musicTrackThumbnails,
                             imageLoader = imageLoader,
-                            currentlyPlayingMusicTrackIndex = index.toInt(),
-                            totalDuration = totalDuration.longValue,
+                            totalDuration = totalDuration.longValue.toFloat(),
                             isPlaying = isPlaying.value,
                             currentPosition = currentPosition.longValue,
                             sliderPosition = sliderPosition.longValue.toFloat(),
@@ -239,14 +248,17 @@ fun HomeScreen(
                                 player.seekTo(sliderPosition.longValue)
                             },
                             onPlayPauseClick = {
+                                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 if (isPlaying.value) player.pause()
                                 else player.play()
                                 isPlaying.value = player.isPlaying
                             },
                             onNextClick = {
+                                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.onEvent(MusicTrackEvent.SelectNextMusicTrack)
                             },
                             onPreviousClick = {
+                                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.onEvent(MusicTrackEvent.SelectPreviousMusicTrack)
                             }
                         )

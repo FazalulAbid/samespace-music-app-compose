@@ -3,6 +3,7 @@ package com.fazalulabid.samespacemusic.presentation.screens.player
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -51,7 +53,7 @@ fun PlayerExpandedContent(
     currentlyPlayingMusicTrack: MusicTrack,
     currentlyPlayingMusicTrackIndex: Int,
     sliderPosition: Float,
-    totalDuration: Long,
+    totalDuration: Float,
     currentPosition: Long,
     isPlaying: Boolean,
     musicTrackThumbnailList: List<MusicTrackThumbnail>,

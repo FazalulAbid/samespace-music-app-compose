@@ -47,11 +47,9 @@ fun PlayerThumbnailPager(
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(currentPlayingMusicTrackIndex)
     }
-
     LaunchedEffect(currentPlayingMusicTrackIndex) {
         pagerState.animateScrollToPage(currentPlayingMusicTrackIndex)
     }
-
     LaunchedEffect(pagerState.currentPage) {
         onThumbnailPagerChanged(pagerState.currentPage)
     }

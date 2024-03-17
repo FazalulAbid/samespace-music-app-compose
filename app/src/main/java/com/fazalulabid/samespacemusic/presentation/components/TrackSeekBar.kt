@@ -26,7 +26,7 @@ fun TrackSeekBar(
     modifier: Modifier = Modifier,
     value: Float,
     sliderEndShape: Shape = MaterialTheme.shapes.large,
-    totalDuration: Long,
+    totalDuration: Float,
     currentPosition: Long,
     onValueChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit
@@ -40,6 +40,7 @@ fun TrackSeekBar(
                 .fillMaxWidth()
                 .clip(sliderEndShape),
             value = value,
+            valueRange = 0f..totalDuration,
             colors = SliderDefaults.colors(
                 activeTrackColor = MaterialTheme.colorScheme.onBackground,
                 inactiveTickColor = MaterialTheme.colorScheme.onSurface
@@ -65,7 +66,7 @@ fun TrackSeekBar(
                     fontWeight = FontWeight.Normal
                 )
             )
-            val remainTime = totalDuration - currentPosition
+            val remainTime = totalDuration.toLong() - currentPosition
             Text(
                 text = if (remainTime >= 0) remainTime.convertToMinutes() else "",
                 style = MaterialTheme.typography.bodySmall.copy(
