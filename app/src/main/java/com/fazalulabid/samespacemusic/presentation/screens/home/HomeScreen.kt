@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -75,12 +76,12 @@ fun HomeScreen(
     var isPlayerSheetOpen by rememberSaveable { mutableStateOf(false) }
 
     // Player States
-    val isPlaying = remember { mutableStateOf(false) }
+    val isPlaying = remember { mutableStateOf(player.isPlaying) }
     val currentPosition = remember { mutableLongStateOf(0) }
     val sliderPosition = remember { mutableLongStateOf(0) }
     val totalDuration = remember { mutableLongStateOf(0) }
 
-    LaunchedEffect(player.currentMediaItemIndex) {
+    LaunchedEffect(key1 = player.currentMediaItemIndex) {
         if (musicTrackState.musicTracks.isNotEmpty()) {
             viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(player.currentMediaItemIndex.toLong()))
         }
@@ -105,6 +106,7 @@ fun HomeScreen(
         musicTrackState.musicTracks.forEach { musicTrack ->
             player.addMediaItem(MediaItem.fromUri(musicTrack.getMediaUrl()))
         }
+        player.prepare()
     }
 
     LaunchedEffect(key1 = true) {
@@ -112,7 +114,9 @@ fun HomeScreen(
             when (event) {
                 is HomeScreenUiEvent.PlayMusicTrack -> {
                     isPlayerSheetOpen = true
-                    player.seekTo(event.index, 0)
+                    if (!event.isFirstTrack) {
+                        player.seekTo(event.index, 0)
+                    }
                     player.play()
                     isPlaying.value = true
                 }
@@ -232,6 +236,7 @@ fun HomeScreen(
                             imageLoader = imageLoader,
                             totalDuration = totalDuration.longValue.toFloat(),
                             isPlaying = isPlaying.value,
+                            isLoading = player.isLoading,
                             currentPosition = currentPosition.longValue,
                             sliderPosition = sliderPosition.longValue.toFloat(),
                             onThumbnailPagerChanged = { musicTrackIndex ->
@@ -255,11 +260,11 @@ fun HomeScreen(
                             },
                             onNextClick = {
                                 localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                viewModel.onEvent(MusicTrackEvent.SelectNextMusicTrack)
+                                player.seekToNextMediaItem()
                             },
                             onPreviousClick = {
                                 localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                viewModel.onEvent(MusicTrackEvent.SelectPreviousMusicTrack)
+                                player.seekToPreviousMediaItem()
                             }
                         )
                     }

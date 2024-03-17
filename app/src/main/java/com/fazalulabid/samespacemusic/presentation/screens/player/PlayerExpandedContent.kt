@@ -1,9 +1,9 @@
 package com.fazalulabid.samespacemusic.presentation.screens.player
 
+import android.util.Log
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,11 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +56,7 @@ fun PlayerExpandedContent(
     totalDuration: Float,
     currentPosition: Long,
     isPlaying: Boolean,
+    isLoading: Boolean,
     musicTrackThumbnailList: List<MusicTrackThumbnail>,
     imageLoader: ImageLoader,
     onThumbnailPagerChanged: (Int) -> Unit,
@@ -65,6 +66,7 @@ fun PlayerExpandedContent(
     onPreviousClick: () -> Unit,
     onPlayPauseClick: () -> Unit
 ) {
+
     val windowInsets = WindowInsets.systemBars
 
     val transition = updateTransition(currentlyPlayingMusicTrack.accent, label = "")
@@ -158,6 +160,7 @@ fun PlayerExpandedContent(
             StandardIconButton(
                 icon = R.drawable.play_skip_back,
                 color = MaterialTheme.colorScheme.onBackground,
+                enabled = !isLoading,
                 onClick = onPreviousClick
             )
 
@@ -178,6 +181,7 @@ fun PlayerExpandedContent(
             StandardIconButton(
                 icon = R.drawable.play_skip_forward,
                 color = MaterialTheme.colorScheme.onBackground,
+                enabled = !isLoading,
                 onClick = onNextClick
             )
         }

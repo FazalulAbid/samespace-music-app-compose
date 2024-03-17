@@ -20,6 +20,7 @@ fun StandardIconButton(
     color: Color,
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Transparent,
+    enabled: Boolean = true,
     iconContentDescription: String? = null,
 ) {
     IconButton(
@@ -27,6 +28,7 @@ fun StandardIconButton(
             .clip(CircleShape)
             .background(backgroundColor),
         onClick = { onClick() },
+        enabled = enabled,
         colors = IconButtonColors(
             containerColor = backgroundColor,
             contentColor = color,

@@ -18,6 +18,8 @@ class HomeViewModel @Inject constructor(
     private val getAllMusicTracksUseCase: GetAllMusicTracksUseCase
 ) : ViewModel() {
 
+    var isFirstTrack = true
+
     private val _musicTrackState = mutableStateOf(MusicTracksState())
     val musicTrackState: State<MusicTracksState> = _musicTrackState
 
@@ -35,7 +37,13 @@ class HomeViewModel @Inject constructor(
             is MusicTrackEvent.SelectMusicTrackAndPlay -> {
                 viewModelScope.launch {
                     selectMusicTrack(event.index)
-                    _eventFlow.emit(HomeScreenUiEvent.PlayMusicTrack(index = event.index.toInt()))
+                    _eventFlow.emit(
+                        HomeScreenUiEvent.PlayMusicTrack(
+                            index = event.index.toInt(),
+                            isFirstTrack = isFirstTrack
+                        )
+                    )
+                    isFirstTrack = false
                 }
             }
 
@@ -46,28 +54,6 @@ class HomeViewModel @Inject constructor(
             is MusicTrackEvent.GetMusicTracks -> {
                 viewModelScope.launch {
                     getAllMusicTracks(needToFetchFromApi = event.isRefresh)
-                }
-            }
-
-            MusicTrackEvent.SelectNextMusicTrack -> {
-                viewModelScope.launch {
-                    setNextMusicTrackIndex()
-                    _eventFlow.emit(
-                        HomeScreenUiEvent.PlayMusicTrack(
-                            _musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ?: 0
-                        )
-                    )
-                }
-            }
-
-            MusicTrackEvent.SelectPreviousMusicTrack -> {
-                viewModelScope.launch {
-                    setPreviousMusicTrackIndex()
-                    _eventFlow.emit(
-                        HomeScreenUiEvent.PlayMusicTrack(
-                            _musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ?: 0
-                        )
-                    )
                 }
             }
         }
@@ -103,21 +89,5 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun setNextMusicTrackIndex() {
-        _musicTrackState.value = musicTrackState.value.copy(
-            currentlyPlayingTrackIndex = if (_musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ==
-                musicTrackState.value.musicTracks.count().minus(1)
-            ) 0 else _musicTrackState.value.currentlyPlayingTrackIndex?.plus(1)
-        )
-    }
-
-    private fun setPreviousMusicTrackIndex() {
-        _musicTrackState.value = musicTrackState.value.copy(
-            currentlyPlayingTrackIndex = if (_musicTrackState.value.currentlyPlayingTrackIndex?.toInt() == 0
-            ) _musicTrackState.value.musicTracks.count().minus(1).toLong()
-            else _musicTrackState.value.currentlyPlayingTrackIndex?.minus(1)
-        )
     }
 }

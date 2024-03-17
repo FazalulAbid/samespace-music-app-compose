@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.media3.exoplayer.ExoPlayer
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
