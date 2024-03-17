@@ -43,6 +43,7 @@ import com.fazalulabid.samespacemusic.presentation.screens.player.PlayerExpanded
 import com.fazalulabid.samespacemusic.presentation.ui.theme.StandardScreenPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -122,7 +123,6 @@ fun HomeScreen(
         if (!pagerState.isScrollInProgress) {
             selectedTabIndex = pagerState.currentPage
         }
-
     }
 
     Box(
@@ -223,6 +223,8 @@ fun HomeScreen(
                             currentlyPlayingMusicTrackIndex = index.toInt(),
                             totalDuration = totalDuration.longValue,
                             isPlaying = isPlaying.value,
+                            currentPosition = currentPosition.longValue,
+                            sliderPosition = sliderPosition.longValue.toFloat(),
                             onThumbnailPagerChanged = { musicTrackIndex ->
                                 viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(musicTrackIndex.toLong()))
                                 if (musicTrackState.currentlyPlayingTrackIndex.toInt() != musicTrackIndex) {
@@ -236,8 +238,17 @@ fun HomeScreen(
                                 currentPosition.longValue = sliderPosition.longValue
                                 player.seekTo(sliderPosition.longValue)
                             },
-                            currentPosition = currentPosition.longValue,
-                            sliderPosition = sliderPosition.longValue.toFloat()
+                            onPlayPauseClick = {
+                                if (isPlaying.value) player.pause()
+                                else player.play()
+                                isPlaying.value = player.isPlaying
+                            },
+                            onNextClick = {
+                                viewModel.onEvent(MusicTrackEvent.SelectNextMusicTrack)
+                            },
+                            onPreviousClick = {
+                                viewModel.onEvent(MusicTrackEvent.SelectPreviousMusicTrack)
+                            }
                         )
                     }
                 }

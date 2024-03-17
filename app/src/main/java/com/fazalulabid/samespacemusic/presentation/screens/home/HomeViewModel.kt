@@ -1,6 +1,5 @@
 package com.fazalulabid.samespacemusic.presentation.screens.home
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -49,6 +48,28 @@ class HomeViewModel @Inject constructor(
                     getAllMusicTracks(needToFetchFromApi = event.isRefresh)
                 }
             }
+
+            MusicTrackEvent.SelectNextMusicTrack -> {
+                viewModelScope.launch {
+                    setNextMusicTrackIndex()
+                    _eventFlow.emit(
+                        HomeScreenUiEvent.PlayMusicTrack(
+                            _musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ?: 0
+                        )
+                    )
+                }
+            }
+
+            MusicTrackEvent.SelectPreviousMusicTrack -> {
+                viewModelScope.launch {
+                    setPreviousMusicTrackIndex()
+                    _eventFlow.emit(
+                        HomeScreenUiEvent.PlayMusicTrack(
+                            _musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ?: 0
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -57,7 +78,6 @@ class HomeViewModel @Inject constructor(
             currentlyPlayingTrackIndex = musicTrackIndex
         )
     }
-
 
     private suspend fun getAllMusicTracks(needToFetchFromApi: Boolean = false) {
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
@@ -83,5 +103,21 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun setNextMusicTrackIndex() {
+        _musicTrackState.value = musicTrackState.value.copy(
+            currentlyPlayingTrackIndex = if (_musicTrackState.value.currentlyPlayingTrackIndex?.toInt() ==
+                musicTrackState.value.musicTracks.count().minus(1)
+            ) 0 else _musicTrackState.value.currentlyPlayingTrackIndex?.plus(1)
+        )
+    }
+
+    private fun setPreviousMusicTrackIndex() {
+        _musicTrackState.value = musicTrackState.value.copy(
+            currentlyPlayingTrackIndex = if (_musicTrackState.value.currentlyPlayingTrackIndex?.toInt() == 0
+            ) _musicTrackState.value.musicTracks.count().minus(1).toLong()
+            else _musicTrackState.value.currentlyPlayingTrackIndex?.minus(1)
+        )
     }
 }

@@ -35,8 +35,8 @@ import com.fazalulabid.samespacemusic.R
 import com.fazalulabid.samespacemusic.core.util.Constants.BACKGROUND_ANIMATION_DURATION
 import com.fazalulabid.samespacemusic.domain.model.MusicTrack
 import com.fazalulabid.samespacemusic.domain.model.MusicTrackThumbnail
-import com.fazalulabid.samespacemusic.presentation.components.TrackSeekBar
 import com.fazalulabid.samespacemusic.presentation.components.StandardIconButton
+import com.fazalulabid.samespacemusic.presentation.components.TrackSeekBar
 import com.fazalulabid.samespacemusic.presentation.ui.theme.PlayPauseButtonSize
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeHuge48
 import com.fazalulabid.samespacemusic.presentation.ui.theme.SizeLarge24
@@ -58,7 +58,10 @@ fun PlayerExpandedContent(
     imageLoader: ImageLoader,
     onThumbnailPagerChanged: (Int) -> Unit,
     onSliderValueChange: (Float) -> Unit,
-    onSliderValueChangeFinished: () -> Unit
+    onSliderValueChangeFinished: () -> Unit,
+    onNextClick: () -> Unit,
+    onPreviousClick: () -> Unit,
+    onPlayPauseClick: () -> Unit
 ) {
     val windowInsets = WindowInsets.systemBars
 
@@ -153,18 +156,14 @@ fun PlayerExpandedContent(
             StandardIconButton(
                 icon = R.drawable.play_skip_back,
                 color = MaterialTheme.colorScheme.onBackground,
-                onClick = {
-
-                }
+                onClick = onPreviousClick
             )
 
             Spacer(modifier = Modifier.width(SizeStandard16))
 
             StandardIconButton(
                 modifier = Modifier.size(PlayPauseButtonSize),
-                onClick = {
-
-                },
+                onClick = onPlayPauseClick,
                 icon = if (isPlaying) {
                     R.drawable.pause
                 } else R.drawable.play,
@@ -177,9 +176,7 @@ fun PlayerExpandedContent(
             StandardIconButton(
                 icon = R.drawable.play_skip_forward,
                 color = MaterialTheme.colorScheme.onBackground,
-                onClick = {
-                    // Force go to next song
-                }
+                onClick = onNextClick
             )
         }
 
