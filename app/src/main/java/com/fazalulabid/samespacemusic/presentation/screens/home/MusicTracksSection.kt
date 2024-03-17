@@ -45,7 +45,7 @@ fun MusicTracksSection(
 
     AnimatedVisibility(
         visible = isLoading,
-        enter = fadeIn(animationSpec = tween(100)),
+        enter = fadeIn(animationSpec = tween(0)),
         exit = fadeOut()
     ) {
         LazyColumn {
@@ -58,7 +58,7 @@ fun MusicTracksSection(
     AnimatedVisibility(
         visible = !isLoading,
         enter = fadeIn(animationSpec = TweenSpec(1000)),
-        exit = fadeOut(animationSpec = TweenSpec(500))
+        exit = fadeOut(animationSpec = TweenSpec(0))
     ) {
         HorizontalPager(
             state = pagerState,

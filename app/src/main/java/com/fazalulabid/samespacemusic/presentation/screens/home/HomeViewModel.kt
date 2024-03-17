@@ -3,11 +3,13 @@ package com.fazalulabid.samespacemusic.presentation.screens.home
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fazalulabid.samespacemusic.core.util.Resource
 import com.fazalulabid.samespacemusic.domain.model.toMusicTrackThumbnails
 import com.fazalulabid.samespacemusic.domain.usecase.GetAllMusicTracksUseCase
+import com.fazalulabid.samespacemusic.presentation.util.fromHex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -102,6 +104,22 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun nextColor(index: Int): Color? {
+        return try {
+            Color.fromHex(_musicTrackState.value.musicTracks[index + 1].accent)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun previousColor(index: Int): Color? {
+        return try {
+            Color.fromHex(_musicTrackState.value.musicTracks[index - 1].accent)
+        } catch (e: Exception) {
+            null
         }
     }
 }

@@ -74,6 +74,11 @@ fun HomeScreen(
     )
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = musicTrackState.isLoading)
     var isPlayerSheetOpen by rememberSaveable { mutableStateOf(false) }
+    val collapsedPlayerNextAndPreviousColors = remember {
+        mutableStateOf<Pair<Color?, Color?>>(
+            Pair(Color.Black, Color.Black)
+        )
+    }
 
     // Player States
     val isPlaying = remember { mutableStateOf(player.isPlaying) }
@@ -85,6 +90,13 @@ fun HomeScreen(
         if (musicTrackState.musicTracks.isNotEmpty()) {
             viewModel.onEvent(MusicTrackEvent.SelectMusicTrack(player.currentMediaItemIndex.toLong()))
         }
+    }
+
+    LaunchedEffect(musicTrackState.currentlyPlayingTrackIndex) {
+        collapsedPlayerNextAndPreviousColors.value = Pair(
+            viewModel.nextColor(musicTrackState.currentlyPlayingTrackIndex?.toInt() ?: 0),
+            viewModel.previousColor(musicTrackState.currentlyPlayingTrackIndex?.toInt() ?: 0)
+        )
     }
 
     LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
@@ -184,8 +196,21 @@ fun HomeScreen(
                         currentMusicTrack = musicTrackState.musicTracks[musicTrackState.currentlyPlayingTrackIndex.toInt()],
                         imageLoader = imageLoader,
                         isPlaying = isPlaying.value,
+                        nextAndPreviousColors = collapsedPlayerNextAndPreviousColors.value,
                         onClick = {
                             isPlayerSheetOpen = true
+                        },
+                        onSwipeToLeft = {
+                            if (!player.isLoading) {
+                                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                player.seekToNextMediaItem()
+                            }
+                        },
+                        onSwipeToRight = {
+                            if (!player.isLoading) {
+                                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                player.seekToPreviousMediaItem()
+                            }
                         },
                         onActionClick = {
                             localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
