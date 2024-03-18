@@ -1,7 +1,7 @@
 package com.fazalulabid.samespacemusic.di
 
-import com.fazalulabid.samespacemusic.BuildConfig
 import com.fazalulabid.samespacemusic.core.util.CacheManager
+import com.fazalulabid.samespacemusic.core.util.Constants
 import com.fazalulabid.samespacemusic.data.datastore.DataStoreHelper
 import com.fazalulabid.samespacemusic.data.db.MusicTracksDatabase
 import com.fazalulabid.samespacemusic.data.remote.MusicTrackApiService
@@ -29,7 +29,7 @@ object MusicTrackModule {
     fun provideMusicTracksApiService(client: OkHttpClient): MusicTrackApiService {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .client(client)
             .build()
             .create(MusicTrackApiService::class.java)

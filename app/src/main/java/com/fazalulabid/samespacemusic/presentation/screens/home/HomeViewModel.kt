@@ -69,10 +69,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun getAllMusicTracks(needToFetchFromApi: Boolean = false) {
-        Log.d(
-            "Hello Before",
-            "getAllMusicTracks: ${_musicTrackState.value.currentlyPlayingTrackIndex}"
-        )
         _musicTrackState.value = _musicTrackState.value.copy(isLoading = true)
         getAllMusicTracksUseCase(
             GetAllMusicTracksUseCase.Params(needToFetchFromApi)
@@ -97,10 +93,6 @@ class HomeViewModel @Inject constructor(
                         musicTrackThumbnails = result.data.toMusicTrackThumbnails() ?: emptyList(),
                         isLoading = false,
                         error = null
-                    )
-                    Log.d(
-                        "Hello",
-                        "getAllMusicTracks: ${_musicTrackState.value.currentlyPlayingTrackIndex}"
                     )
                 }
             }

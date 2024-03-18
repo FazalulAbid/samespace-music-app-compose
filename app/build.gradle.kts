@@ -22,16 +22,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        val properties = Properties()
-        val localPropertiesFile = project.rootProject.file("local.properties")
-        localPropertiesFile.inputStream().use { properties.load(it) }
-        buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
